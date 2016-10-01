@@ -74,4 +74,10 @@ public class Route {
         }
         return null;
     }
+
+    public String toString(){
+        return "You will pass " + roads.length +
+                " roads and " + intersections.length +
+                " intersections!";
+    }
 }

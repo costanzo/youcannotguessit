@@ -16,21 +16,31 @@ public class Planner implements IPlanning {
         TURN_RIGHT
     }
 
+    private RoutePlanner routePlanner;
+
     private Car car;
     private int times = 0;
+    private Route route;
+    private Point2D.Double destination;
 
-    public Planner(Car car){
+    public Planner(Car car, Point2D.Double dest, Map map){
         this.car = car;
+        this.routePlanner = new SimpleRoutePlanner(dest, map);
     }
 
     public boolean planRoute(Point2D.Double destination){
-        return true;
+        this.route = routePlanner.getRoute(car.getPosition());
+        if(route == null){
+            return false;
+        } else {
+            System.out.println(route);
+            return true;
+        }
     }
 
     public void update(PerceptionResponse[] results, int visibility, float delta){
-        if(times <= 5) {
-            this.car.accelerate();
-            times ++;
+        if(this.route == null) {
+            planRoute(this.destination);
         }
 
         this.car.update(delta);

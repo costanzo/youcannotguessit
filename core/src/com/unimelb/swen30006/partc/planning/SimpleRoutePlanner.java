@@ -4,23 +4,26 @@ import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 /**
  * Created by Sean on 9/30/2016.
  */
 public class SimpleRoutePlanner implements RoutePlanner {
     private Point2D.Double destination;
-    private Road[] roads;
-    private Intersection[] intersections;
+    private Map map;
 
-    public SimpleRoutePlanner(Point2D.Double destination, Road[] roads){
+    public SimpleRoutePlanner(Point2D.Double destination, Map map){
         this.destination = destination;
-        this.roads = roads;
+        this.map = map;
     }
 
     public Route getRoute(Point2D.Double departurePosition){
-        Road currentRoad = findRoad(departurePosition);
-        Road destinationRoad = findRoad(this.destination);
+        Road currentRoad = map.findRoad(departurePosition);
+        System.out.println("Current road is " + currentRoad);
+
+        Road destinationRoad = map.findRoad(this.destination);
+        System.out.println("Dest road is " + destinationRoad);
 
         if(destinationRoad == null){
             return null;
@@ -30,15 +33,73 @@ public class SimpleRoutePlanner implements RoutePlanner {
         return route;
     }
 
-    private Road findRoad(Point2D.Double pos){
-        for(Road r : roads){
-            if (r.containsPoint(pos))
-                return r;
+    private Route calculateBestRoute(Road start, Road end){
+        ArrayList<Road> rs = new ArrayList<Road>();
+        ArrayList<Intersection> is = new ArrayList<Intersection>();
+
+
+        Road road = start;
+        Intersection intersection;
+        while(!road.equals(end)){
+            rs.add(start);
+            Intersection[] roadIntersections = map.getRoadIntersections(road);
+            intersection = findCloserInteraction(roadIntersections, end);
+            is.add(intersection);
+            road = findClosestRoad(intersection, end);
         }
-        return null;
+
+        rs.add(road);
+
+        return new Route(rs.toArray(new Road[0]), is.toArray(new Intersection[0]));
+
     }
 
-    private Route calculateBestRoute(Road start, Road end){
-        return null;
+
+
+    private Intersection findCloserInteraction(Intersection[] is, Road dest){
+        Intersection closest = null;
+        float minDist = Integer.MAX_VALUE;
+        for(Intersection i : is){
+            float dist = dest.minDistanceTo(i.pos);
+            if(dist < minDist){
+                minDist = dist;
+                closest = i;
+            }
+        }
+
+        return closest;
+    }
+
+    private Road findClosestRoad(Intersection i, Road dest){
+        Intersection.Direction[] dirs = Intersection.Direction.values();
+        ArrayList<Road> rs = new ArrayList<Road>(4);
+        for(Intersection.Direction d : dirs){
+            Road r = i.roads.get(d);
+            if(r.equals(dest)){
+                return dest;
+            }
+            rs.add(r);
+        }
+
+        return closestRoad(rs, dest);
+
+    }
+
+    private Road closestRoad(ArrayList<Road> rs, Road dest){
+        Road closest = null;
+        float minDist = Integer.MAX_VALUE;
+        for(Road r : rs){
+            float dist = roadDistance(r, dest);
+            if(dist < minDist){
+                closest = r;
+            }
+        }
+        return closest;
+    }
+
+    private float roadDistance(Road r1, Road r2){
+        float d1 = r2.minDistanceTo(r1.getStartPos());
+        float d2 = r2.minDistanceTo(r1.getEndPos());
+        return Math.min(d1, d2);
     }
 }
