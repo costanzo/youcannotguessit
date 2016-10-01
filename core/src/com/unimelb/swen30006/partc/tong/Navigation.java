@@ -19,6 +19,7 @@ public class Navigation {
     private Car car;
     private Route route;
     private Map map;
+    private Road nextRoad;
 
     public enum CarState{
         LEFT,RIGHT,STRAIGHT
@@ -34,20 +35,36 @@ public class Navigation {
     }
 
     private CarState getState(){
-        if(canExit()) {
+        if(!onCurrentRoad()&&!onNextRoad()) {
             state=getNextState();
         }
         return state;
     }
 
-    private boolean canExit(){
-        return !currentRoad.containsPoint(car.getPosition());
+    //check the car is on the current road
+    private boolean onCurrentRoad(){
+        if(currentRoad.containsPoint(car.getPosition())){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    //check the car is on the next road
+    private boolean onNextRoad(){
+        if(nextRoad!=null){
+            if(nextRoad.containsPoint(car.getPosition())) return true;
+        }
+        return false;
+
     }
 
+    //based on the current road and next road, get the new state.
     private CarState getNextState(){
-        Road nextRoad = route.nextRoad(currentRoad);
+        nextRoad = route.nextRoad(currentRoad);
         Intersection.Direction next_road_direction = map.findTurningDirection(currentRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
+        currentRoad = nextRoad;
+        nextRoad=route.nextRoad(currentRoad);
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
                 return CarState.LEFT;

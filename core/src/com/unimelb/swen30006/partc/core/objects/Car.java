@@ -63,6 +63,10 @@ public class Car extends WorldObject implements ISteppable {
 		this.turnAngle = angle;
 	}
 
+	public float getRotation(){
+		return this.rotation;
+	}
+
 	public Vector2 getVelocity(){
 		return this.velocity;
 	}
