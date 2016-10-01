@@ -34,17 +34,4 @@ public class Route {
         }
     }
 
-    public float eta(Vector2 velocity){
-        float length = totalRoadLength();
-        float speed = velocity.len();
-        return length * speed;
-    }
-
-    private float totalRoadLength(){
-        float sum = 0;
-        for(Road r : roads){
-            sum += r.getLength();
-        }
-        return sum;
-    }
 }
