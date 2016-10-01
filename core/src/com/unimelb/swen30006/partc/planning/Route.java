@@ -19,19 +19,40 @@ public class Route {
     }
 
     public Road nextRoad(Road currentRoad){
-        int i;
-        for(i = 0; i< roads.length ; i++){
-            if(roads[i].getStartPos().equals(currentRoad.getStartPos())&&
-                    roads[i].getEndPos().equals(currentRoad.getEndPos())){
-                break;
-            }
-        }
+        int i = getRoadIndex(currentRoad);
 
-        if( i == roads.length ){
+        if( i == (roads.length-1) ){
             return null;
-        } else{
-            return roads[i];
+        } else if( i != -1){
+            return roads[i+1];
+        }
+        else {
+            // cannot find a road
+            return null;
         }
     }
 
+    public Intersection nextIntersection(Road currentRoad){
+        int i = getRoadIndex(currentRoad);
+
+        if ( i == (roads.length - 1)){
+            return null;
+        } else if( i != -1){
+            return intersections[i];
+        } else {
+            // cannot find the road
+            return null;
+        }
+    }
+
+    private int getRoadIndex(Road road){
+        int i;
+        for(i = 0; i< roads.length ; i++){
+            if(roads[i].getStartPos().equals(road.getStartPos())&&
+                    roads[i].getEndPos().equals(road.getEndPos())){
+                return i;
+            }
+        }
+        return -1;
+    }
 }
