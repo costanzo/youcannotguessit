@@ -179,4 +179,12 @@ public class Road {
 	public boolean overlaps(Rectangle2D.Double rect) {
 		return this.shape.intersects(rect);
 	}
+
+	public boolean equals(Road road){
+		if (this.endPos.equals(road.endPos) &&
+				this.startPos.equals(road.startPos)){
+			return true;
+		}
+		return false;
+	}
 }
