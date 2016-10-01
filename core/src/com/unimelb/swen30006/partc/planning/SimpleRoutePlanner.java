@@ -20,11 +20,7 @@ public class SimpleRoutePlanner implements RoutePlanner {
 
     public Route getRoute(Point2D.Double departurePosition){
         Road currentRoad = map.findRoad(departurePosition);
-        System.out.println("Current road is " + currentRoad);
-
         Road destinationRoad = map.findRoad(this.destination);
-        System.out.println("Dest road is " + destinationRoad);
-
         if(destinationRoad == null){
             return null;
         }
@@ -53,8 +49,6 @@ public class SimpleRoutePlanner implements RoutePlanner {
         return new Route(rs.toArray(new Road[0]), is.toArray(new Intersection[0]));
 
     }
-
-
 
     private Intersection findCloserInteraction(Intersection[] is, Road dest){
         Intersection closest = null;

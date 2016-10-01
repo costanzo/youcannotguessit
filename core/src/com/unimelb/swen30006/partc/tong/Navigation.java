@@ -20,7 +20,7 @@ public class Navigation {
     private Route route;
     private Map map;
 
-    private enum CarState{
+    public enum CarState{
         LEFT,RIGHT,STRAIGHT
     }
 

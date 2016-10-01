@@ -2,6 +2,8 @@ package com.unimelb.swen30006.partc.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.unimelb.swen30006.partc.ai.interfaces.IPerception;
+import com.unimelb.swen30006.partc.ai.interfaces.IPlanning;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.World;
 import com.unimelb.swen30006.partc.core.objects.Car;
@@ -18,12 +20,26 @@ import com.unimelb.swen30006.partc.perception.PerceptionForTesting;
 public class KeyboardController extends Controller {
 
 	private final static float ROTATION_RATE = 150f;
-	public KeyboardController(Car c) {
-		super(c);
-	}
+
+    // The interfaces used to update the world
+    private IPlanning planner ;
+    private IPerception perception;
+
+
+    public KeyboardController(Car car,IPlanning planner, IPerception perception) {
+        super(car);
+        this.perception = perception;
+        this.planner = planner;
+    }
 
 	@Override
 	public void update(float delta) {
+        // first updating perception
+        PerceptionResponse[] responses = perception.analyseSurroundings(car.getPosition());
+        // Finally update planner
+        planner.update(responses, World.VISIBILITY_RADIUS, delta);
+
+
         if (Gdx.input.isKeyPressed(Input.Keys.B)) {
             this.car.brake();
         }
