@@ -4,6 +4,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -31,6 +32,7 @@ public class Road {
 	private final int[] lanes;
 	private final RoadMarking[] markers;
 	private Rectangle2D shape;
+	private HashMap<String,Intersection.Direction> road_direction;
 
 	public Road(Point2D.Double startPos, Point2D.Double endPos, float width, int numLanes, int[] laneMask) {
 		this.startPos = startPos;
@@ -187,4 +189,25 @@ public class Road {
 		}
 		return false;
 	}
+	public HashMap<String, Intersection.Direction> getRoadDirection(){
+		if(getStartPos().getX()==getEndPos().getX()){
+			if(getStartPos().getY()>getEndPos().getY()){
+				road_direction.put("Start", Intersection.Direction.North);
+				road_direction.put("End", Intersection.Direction.South);
+			}else{
+				road_direction.put("End", Intersection.Direction.North);
+				road_direction.put("Start", Intersection.Direction.South);			}
+		}
+		else {
+			if (getStartPos().getX() > getEndPos().getY()) {
+				road_direction.put("Start", Intersection.Direction.East);
+				road_direction.put("End", Intersection.Direction.West);
+			} else {
+				road_direction.put("End", Intersection.Direction.East);
+				road_direction.put("Start", Intersection.Direction.West);
+			}
+		}
+		return road_direction;
+	}
+
 }
