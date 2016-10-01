@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -54,5 +55,23 @@ public class Route {
             }
         }
         return -1;
+    }
+
+    public Road findCurrentRoad(Point2D.Double pos){
+        for(Road r : roads){
+            if (r.containsPoint(pos)){
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public Intersection findCurrentIntersection(Point2D.Double pos){
+        for(Intersection i : intersections){
+            if (i.containsPoint(pos)){
+                return i;
+            }
+        }
+        return null;
     }
 }
