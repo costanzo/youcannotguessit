@@ -10,6 +10,13 @@ import java.awt.geom.Point2D;
  * Created by Sean on 9/26/2016.
  */
 public class Planner implements IPlanning {
+    public enum State{
+        SMOOTH_DRIVING,
+        TRAFFIC_JAM,
+        CROSSING,
+        WAITING_GREEN_LIGHT
+    }
+
     private Car car;
     private int times = 0;
 
