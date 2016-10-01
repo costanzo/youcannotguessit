@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.core.ISteppable;
 import com.unimelb.swen30006.partc.render_engine.CarRenderer;
+import com.unimelb.swen30006.partc.roads.Intersection;
 
 /**
  * This class provides functionality for use within the simulation system. It is NOT intended to be
@@ -25,6 +26,7 @@ public class Car extends WorldObject implements ISteppable {
 	private static final float TURN_EPSILON = 0.0002f;
 	private static final float MAX_VELOCITY = 50f;
 	private static final float MAX_DEGREES = 360;
+	private static final float HALF_DEGREES = 180;
 	
 	// Private instance variables for configuration
 	private float acceleration;
@@ -187,6 +189,26 @@ public class Car extends WorldObject implements ISteppable {
 		position.y = position.y + this.velocity.y * delta;
 		this.setPosition(position);
 
+	}
+
+	private float adjustrotation(){
+		float adjusted_rotation = rotation;
+		while (adjusted_rotation <= -HALF_DEGREES) adjusted_rotation += MAX_DEGREES;
+		while (adjusted_rotation > HALF_DEGREES) adjusted_rotation -= MAX_DEGREES;
+
+		return adjusted_rotation;
+	}
+
+	public Intersection.Direction getMovingDirection(){
+		float adjusted_rotation = adjustrotation();
+		if(adjusted_rotation<=45&&adjusted_rotation>=-45){
+			return Intersection.Direction.East;
+		}else if (adjusted_rotation>45&&adjusted_rotation<=135){
+			return Intersection.Direction.North;
+		}else if (adjusted_rotation<-45&&adjusted_rotation>=225){
+			return Intersection.Direction.South;
+		}else
+			return Intersection.Direction.West;
 	}
 
 }
