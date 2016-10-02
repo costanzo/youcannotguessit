@@ -20,6 +20,7 @@ public class Navigation {
     private Route route;
     private Map map;
     private Road nextRoad;
+    private float rotation_goal;
 
     public enum CarState{
         LEFT,RIGHT,STRAIGHT
@@ -58,6 +59,10 @@ public class Navigation {
 
     }
 
+    public float getRotation_goal(){
+        return rotation_goal;
+    }
+
     //based on the current road and next road, get the new state.
     private CarState getNextState(){
         nextRoad = route.nextRoad(currentRoad);
@@ -67,26 +72,34 @@ public class Navigation {
         nextRoad=route.nextRoad(currentRoad);
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
+                rotation_goal=180;
                 return CarState.LEFT;
             }else if (next_road_direction == Intersection.Direction.East){
+                rotation_goal=0;
                 return CarState.RIGHT;
             }
         }else if (moving_direction== Intersection.Direction.South){
             if(next_road_direction== Intersection.Direction.West){
+                rotation_goal=180;
                 return CarState.RIGHT;
             }else if (next_road_direction == Intersection.Direction.East){
+                rotation_goal=0;
                 return CarState.LEFT;
             }
         }else if (moving_direction== Intersection.Direction.West){
             if(next_road_direction== Intersection.Direction.North){
+                rotation_goal=90;
                 return CarState.RIGHT;
             }else if (next_road_direction== Intersection.Direction.South){
+                rotation_goal=-90;
                 return CarState.LEFT;
             }
         }else if (moving_direction== Intersection.Direction.East){
             if(next_road_direction== Intersection.Direction.North){
+                rotation_goal=0;
                 return CarState.LEFT;
             }else if (next_road_direction== Intersection.Direction.South){
+                rotation_goal=-90;
                 return CarState.RIGHT;
             }
         }
