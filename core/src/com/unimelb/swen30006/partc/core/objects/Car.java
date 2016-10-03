@@ -50,6 +50,10 @@ public class Car extends WorldObject implements ISteppable {
 		this.rotation = this.turnAngle = 0;
 	}
 
+	public void setRotation(float rotation){
+		this.rotation = rotation;
+	}
+
 	public void brake() {
 		this.braking = true;
 	}
@@ -73,8 +77,8 @@ public class Car extends WorldObject implements ISteppable {
 
 	public Vector2 getDirection(){
 		double r = this.rotation * Math.PI/HALF_DEGREES;
-		double x = 10* Math.cos(r);
-		double y = 10 * Math.sin(r);
+		double x = Math.cos(r);
+		double y = Math.sin(r);
 		return new Vector2((float)x, (float)y);
 	}
 

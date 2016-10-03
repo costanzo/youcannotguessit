@@ -57,7 +57,7 @@ public class WorldObject {
 		return colour;
 	}
 
-	protected void setPosition(Point2D.Double position) {
+	public void setPosition(Point2D.Double position) {
 		this.position = position;
 	}
 	

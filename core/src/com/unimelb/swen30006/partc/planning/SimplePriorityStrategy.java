@@ -1,6 +1,5 @@
 package com.unimelb.swen30006.partc.planning;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
@@ -13,41 +12,63 @@ import java.util.ArrayList;
  */
 public class SimplePriorityStrategy implements PriorityStrategy {
     public static float SAFETY_DISTANCE = 30f;
+    public static float TRAFFIC_REACTION_DISTANCE = 50f;
 
     private Car car;
+    private PerceptionResponse[] perceptionResponses;
 
     public SimplePriorityStrategy(Car car) {
         this.car = car;
     }
 
     public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, Navigation.CarState state){
+        this.perceptionResponses = perceptionResponses;
         if(state == Navigation.CarState.STRAIGHT){
-            Color trafficLightColor = trafficLight(perceptionResponses);
-            if(trafficLightColor == null){
-                System.out.println("Cannot see traffic light");
-            } else {
-                String c = null;
-                if(trafficLightColor == Color.RED)
-                    c = "Red";
-                else if(trafficLightColor == Color.GREEN)
-                    c = "Green";
-                else
-                    c = "Amber";
-                System.out.println(c);
-            }
+            return goStraight();
         } else if(state == Navigation.CarState.LEFT){
-
+            return goStraight();
         } else{
-
+            return goStraight();
         }
-        return null;
     }
 
-    private PerceptionResponse goStraight(PerceptionResponse[] perceptionResponses){
-        return null;
+    private PerceptionResponse goStraight(){
+        PerceptionResponse obstacleAhead = getObstacleAhead();
+        PerceptionResponse trafficLight  = trafficLight();
+
+        if(obstacleAhead != null){
+            return obstacleAhead;
+        } else {
+            return trafficLight;
+        }
     }
 
-    private Color trafficLight(PerceptionResponse[] perceptionResponses){
+    private PerceptionResponse getObstacleAhead(){
+        ArrayList<PerceptionResponse> prs = new ArrayList<PerceptionResponse>();
+        Vector2 carDirection = this.car.getDirection();
+        Vector2 obstacleDirection;
+        for(PerceptionResponse pr : this.perceptionResponses){
+            obstacleDirection = new Vector2((float)(pr.position.x-this.car.getPosition().x),
+                    (float)(pr.position.y-this.car.getPosition().y));
+            if((obstacleDirection.dot(carDirection)-pr.width/2)<this.car.getWidth()/2){
+                prs.add(pr);
+            }
+        }
+
+        PerceptionResponse closest = null;
+        double dist = SAFETY_DISTANCE;
+        for(PerceptionResponse pr : prs){
+            double prDist = pr.position.distance(this.car.getPosition());
+            if(prDist < dist){
+                dist = prDist;
+                closest = pr;
+            }
+        }
+
+        return closest;
+    }
+
+    private PerceptionResponse trafficLight(){
         int sum = 0;
         ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>(4);
         for(PerceptionResponse pr : perceptionResponses){
@@ -70,17 +91,22 @@ public class SimplePriorityStrategy implements PriorityStrategy {
             }
         }
 
+        PerceptionResponse trafficLight = null;
         if(sum == 3){
             PerceptionResponse pr = findMaxDist(trafficLights);
-            return (Color)pr.information.get("state");
+            trafficLight = pr;
         } else if(sum == 4){
             PerceptionResponse pr = findMaxDist(trafficLights);
             trafficLights.remove(pr);
             pr = findMaxDist(trafficLights);
-            return (Color)pr.information.get("state");
+            trafficLight = pr;
         }
 
-        return null;
+        if(trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){
+            trafficLight = null;
+        }
+
+        return trafficLight;
     }
 
     private PerceptionResponse findMaxDist(ArrayList<PerceptionResponse> perceptionResponses){
