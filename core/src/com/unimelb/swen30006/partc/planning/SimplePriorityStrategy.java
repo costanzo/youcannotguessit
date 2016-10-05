@@ -50,7 +50,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         for(PerceptionResponse pr : this.perceptionResponses){
             obstacleDirection = new Vector2((float)(pr.position.x-this.car.getPosition().x),
                     (float)(pr.position.y-this.car.getPosition().y));
-            if((obstacleDirection.dot(carDirection)-pr.width/2)<this.car.getWidth()/2){
+            if((obstacleDirection.dot(carDirection)-pr.width/2)<this.car.getWidth()){
                 prs.add(pr);
             }
         }
@@ -102,7 +102,8 @@ public class SimplePriorityStrategy implements PriorityStrategy {
             trafficLight = pr;
         }
 
-        if(trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){
+        if(trafficLight != null &&
+                trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){
             trafficLight = null;
         }
 
