@@ -1,6 +1,7 @@
 package com.unimelb.swen30006.partc.tong;
 
 import com.unimelb.swen30006.partc.core.objects.Car;
+import com.unimelb.swen30006.partc.planning.CarState;
 import com.unimelb.swen30006.partc.planning.Map;
 import com.unimelb.swen30006.partc.planning.Route;
 import com.unimelb.swen30006.partc.roads.Intersection;
@@ -22,11 +23,7 @@ public class Navigation {
     private Road nextRoad;
     private float rotation_goal;
 
-    public enum CarState{
-        LEFT,
-        RIGHT,
-        STRAIGHT
-    }
+
 
     public Navigation(Car car, Map map){
         this.currentRoad=map.findRoad(car.getPosition());

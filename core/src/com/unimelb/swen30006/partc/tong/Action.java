@@ -18,7 +18,7 @@ public class Action {
 //    KeyboardController keyboard;
 //    Navigation navigation;
 
-    public Action(float angle, boolean accelerate, boolean brake) {
+    public Action(boolean accelerate, boolean brake, float angle) {
         this.angle = angle;
         this.accelerate = accelerate;
         this.brake = brake;
