@@ -37,4 +37,8 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
 
         }
     }
+
+    public Action adjustPosture(float angle){
+
+    }
 }

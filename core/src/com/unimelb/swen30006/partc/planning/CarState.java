@@ -12,9 +12,11 @@ public class CarState {
 
     public final State state;
     public final float angle;
+    public final float shift;
 
-    public CarState(State state, float angle) {
+    public CarState(State state, float shift, float angle) {
         this.state = state;
         this.angle = angle;
+        this.shift = shift;
     }
 }
