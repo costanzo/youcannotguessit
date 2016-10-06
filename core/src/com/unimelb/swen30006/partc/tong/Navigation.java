@@ -23,19 +23,25 @@ public class Navigation {
     private float rotation_goal;
 
     public enum CarState{
-        LEFT,RIGHT,STRAIGHT
+        LEFT,
+        RIGHT,
+        STRAIGHT
     }
 
-    Navigation(Car car, Route route, Map map){
+    public Navigation(Car car, Map map){
         this.currentRoad=map.findRoad(car.getPosition());
         this.currentIntersection = map.findIntersection(car.getPosition());
         this.state = getState();
         this.car = car;
-        this.route = route;
         this.map = map;
+        this.route = null;
     }
 
-    private CarState getState(){
+    public void setRoute(Route route){
+        this.route = route;
+    }
+
+    public CarState getState(){
         if(!onCurrentRoad()&&!onNextRoad()) {
             state=getNextState();
         }
