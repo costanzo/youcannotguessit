@@ -16,7 +16,7 @@ public class Planner implements IPlanning {
     private RoutePlanner routePlanner;
 
     private Car car;
-    private Navigation.CarState state;
+    private CarState state;
     private Navigation gps;
 
     private Route route;

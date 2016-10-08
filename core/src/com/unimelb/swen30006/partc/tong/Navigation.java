@@ -16,7 +16,7 @@ public class Navigation {
 
     private Road currentRoad;
     private Intersection currentIntersection;
-    private CarState state = null;
+    private CarState state;
     private Car car;
     private Route route;
     private Map map;
@@ -38,9 +38,14 @@ public class Navigation {
         this.route = route;
     }
 
+
     public CarState getState(){
         if(!onCurrentRoad()&&!onNextRoad()) {
             state=getNextState();
+        }else{
+            state.setState(CarState.State.STRAIGHT);
+            state.setAngle(car.getAngleDifference());
+            state.setShift(currentRoad.minDistanceTo(car.getPosition()));
         }
         return state;
     }
@@ -62,50 +67,63 @@ public class Navigation {
 
     }
 
-    public float getRotation_goal(){
-        return rotation_goal;
-    }
 
-    //based on the current road and next road, get the new state.
+//    based on the current road and next road, get the new state.
     private CarState getNextState(){
         nextRoad = route.nextRoad(currentRoad);
         Intersection.Direction next_road_direction = map.findTurningDirection(currentRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
-        currentRoad = nextRoad;
-        nextRoad=route.nextRoad(currentRoad);
+        state.setShift(nextRoad.minDistanceTo(car.getPosition()));
+        float adjustrotation = car.adjustrotation();
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
                 rotation_goal=180;
-                return CarState.LEFT;
+                state.setAngle(adjustrotation-rotation_goal);
+                state.setState(CarState.State.LEFT);
             }else if (next_road_direction == Intersection.Direction.East){
                 rotation_goal=0;
-                return CarState.RIGHT;
+                state.setAngle(adjustrotation);
+                state.setState(CarState.State.RIGHT);
             }
         }else if (moving_direction== Intersection.Direction.South){
             if(next_road_direction== Intersection.Direction.West){
-                rotation_goal=180;
-                return CarState.RIGHT;
+                rotation_goal=-180;
+                state.setAngle(adjustrotation-rotation_goal);
+                state.setState(CarState.State.RIGHT);
             }else if (next_road_direction == Intersection.Direction.East){
                 rotation_goal=0;
-                return CarState.LEFT;
+                state.setAngle(adjustrotation);
+                state.setState(CarState.State.LEFT);
             }
         }else if (moving_direction== Intersection.Direction.West){
             if(next_road_direction== Intersection.Direction.North){
                 rotation_goal=90;
-                return CarState.RIGHT;
+                state.setAngle(rotation_goal-adjustrotation);
+                state.setState(CarState.State.RIGHT);
             }else if (next_road_direction== Intersection.Direction.South){
                 rotation_goal=-90;
-                return CarState.LEFT;
+                state.setAngle(adjustrotation-rotation_goal);
+                state.setState(CarState.State.LEFT);
             }
-        }else if (moving_direction== Intersection.Direction.East){
-            if(next_road_direction== Intersection.Direction.North){
-                rotation_goal=0;
-                return CarState.LEFT;
-            }else if (next_road_direction== Intersection.Direction.South){
-                rotation_goal=-90;
-                return CarState.RIGHT;
+        }else if (moving_direction== Intersection.Direction.East) {
+            if (next_road_direction == Intersection.Direction.North) {
+
+                rotation_goal = 90;
+                state.setAngle(adjustrotation-rotation_goal);
+                state.setState(CarState.State.LEFT);
+            } else if (next_road_direction == Intersection.Direction.South) {
+                rotation_goal = -90;
+                state.setAngle(adjustrotation-rotation_goal);
+                state.setState(CarState.State.RIGHT);
             }
+        }else{
+            state.setAngle(adjustrotation);
+            state.setState(CarState.State.STRAIGHT);
+
         }
-        return CarState.STRAIGHT;
+        return state;
     }
+
+
 }
+

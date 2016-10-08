@@ -7,6 +7,7 @@ import java.awt.geom.Rectangle2D;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.core.ISteppable;
+import com.unimelb.swen30006.partc.planning.CarState;
 import com.unimelb.swen30006.partc.render_engine.CarRenderer;
 import com.unimelb.swen30006.partc.roads.Intersection;
 
@@ -197,13 +198,14 @@ public class Car extends WorldObject implements ISteppable {
 
 	}
 
-	private float adjustrotation(){
+	public float adjustrotation(){
 		float adjusted_rotation = rotation;
 		while (adjusted_rotation <= -HALF_DEGREES) adjusted_rotation += MAX_DEGREES;
 		while (adjusted_rotation > HALF_DEGREES) adjusted_rotation -= MAX_DEGREES;
 
 		return adjusted_rotation;
 	}
+	
 
 	public Intersection.Direction getMovingDirection(){
 		float adjusted_rotation = adjustrotation();
@@ -211,10 +213,33 @@ public class Car extends WorldObject implements ISteppable {
 			return Intersection.Direction.East;
 		}else if (adjusted_rotation>45&&adjusted_rotation<=135){
 			return Intersection.Direction.North;
-		}else if (adjusted_rotation<-45&&adjusted_rotation>=225){
+		}else if (adjusted_rotation<-45&&adjusted_rotation>=-135){
 			return Intersection.Direction.South;
 		}else
 			return Intersection.Direction.West;
 	}
 
+	//calculate the angle difference between the angle the car towards and the angle of it should be
+	public float getAngleDifference(){
+		Intersection.Direction movingdirection = getMovingDirection();
+		float adjustrotation = adjustrotation();
+		if(movingdirection== Intersection.Direction.North){
+			return (90-adjustrotation);
+		}else if (movingdirection== Intersection.Direction.South){
+			return (-90-adjustrotation);
+		}else if(movingdirection== Intersection.Direction.East){
+			return (adjustrotation);
+		}else{
+			if(adjustrotation>0){
+				return (-180+adjustrotation);
+			}else{
+				return (180+adjustrotation);
+			}
+		}
+	}
+
+
+	public String toString(){
+		return "Car x = " + this.getPosition().getX() + "y=" + this.getPosition().getY()+ "rotation"+this.adjustrotation() + "direction =" + this.getDirection().epsilonEquals(0,0,0.3f);
+	}
 }
