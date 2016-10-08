@@ -3,6 +3,8 @@ package com.unimelb.swen30006.partc.planning;
 import com.unimelb.swen30006.partc.ai.interfaces.IPlanning;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
+import com.unimelb.swen30006.partc.core.objects.WorldObject;
+import com.unimelb.swen30006.partc.roads.Road;
 import com.unimelb.swen30006.partc.tong.Action;
 import com.unimelb.swen30006.partc.tong.Navigation;
 
@@ -48,9 +50,9 @@ public class Planner implements IPlanning {
             planRoute(this.destination);
         }
 
-        //this.state = gps.getState();
+        this.state = gps.getState();
+        System.out.println(this.state);
         PerceptionResponse pr = this.priorityStrategy.getHighesPriority(results, new CarState(CarState.State.STRAIGHT, 0, 0));
-        System.out.println(pr);
         //Action action = this.handlingStrategy.getAction(pr,this.state);
         //action.takeAction(this.car);
 

@@ -37,7 +37,7 @@ public class SimpleRoutePlanner implements RoutePlanner {
         Road road = start;
         Intersection intersection;
         while(!road.equals(end)){
-            rs.add(start);
+            rs.add(road);
             Intersection[] roadIntersections = map.getRoadIntersections(road);
             intersection = findCloserInteraction(roadIntersections, end);
             is.add(intersection);

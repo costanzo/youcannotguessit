@@ -47,8 +47,6 @@ public final class Intersection {
 	}
 	
 	public boolean containsPoint(Point2D.Double pos){
-		System.out.println(pos);
-		System.out.println(this.shape);
 		return this.shape.contains(pos);
 	}
 	

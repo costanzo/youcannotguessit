@@ -1,5 +1,6 @@
 package com.unimelb.swen30006.partc.planning;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  */
 public class SimplePriorityStrategy implements PriorityStrategy {
     public static float SAFETY_DISTANCE = 30f;
-    public static float TRAFFIC_REACTION_DISTANCE = 50f;
+    public static float TRAFFIC_REACTION_DISTANCE = 70f;
 
     private Car car;
     private PerceptionResponse[] perceptionResponses;
@@ -50,7 +51,8 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         for(PerceptionResponse pr : this.perceptionResponses){
             obstacleDirection = new Vector2((float)(pr.position.x-this.car.getPosition().x),
                     (float)(pr.position.y-this.car.getPosition().y));
-            if((obstacleDirection.dot(carDirection)-pr.width/2)<this.car.getWidth()){
+            float dis = obstacleDirection.dot(carDirection);
+            if((dis > 0) && (Math.sqrt(obstacleDirection.len2() - dis * dis)-pr.width/2) < this.car.getWidth()){
                 prs.add(pr);
             }
         }
@@ -107,6 +109,9 @@ public class SimplePriorityStrategy implements PriorityStrategy {
             trafficLight = null;
         }
 
+        if(trafficLight != null && trafficLight.information.get("state") == Color.GREEN) {
+            trafficLight = null;
+        }
         return trafficLight;
     }
 

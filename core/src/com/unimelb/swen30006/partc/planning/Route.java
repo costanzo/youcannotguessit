@@ -14,14 +14,19 @@ public class Route {
     private Road[] roads;
     private Intersection[] intersections;
 
+
     public Route(Road[] roads, Intersection[] intersections){
         this.roads = roads;
         this.intersections = intersections;
     }
 
+    public Road[] getRoads() {
+        return roads;
+
+    }
+
     public Road nextRoad(Road currentRoad){
         int i = getRoadIndex(currentRoad);
-
         if( i == (roads.length-1) ){
             return null;
         } else if( i != -1){

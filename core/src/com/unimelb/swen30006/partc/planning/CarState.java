@@ -50,4 +50,8 @@ public class CarState {
     public void setShift(float shift) {
         this.shift = shift;
     }
+
+    public String toString(){
+        return this.state.toString() + " " + this.angle + " " + this.shift;
+    }
 }
