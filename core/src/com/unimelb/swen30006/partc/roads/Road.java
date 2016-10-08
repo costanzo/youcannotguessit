@@ -32,7 +32,7 @@ public class Road {
 	private final int[] lanes;
 	private final RoadMarking[] markers;
 	private Rectangle2D shape;
-	private HashMap<String,Intersection.Direction> road_direction;
+	private HashMap<String,Intersection.Direction> road_direction = new HashMap<String, Intersection.Direction>();
 
 	public Road(Point2D.Double startPos, Point2D.Double endPos, float width, int numLanes, int[] laneMask) {
 		this.startPos = startPos;

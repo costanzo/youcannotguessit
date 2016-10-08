@@ -31,11 +31,10 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             } else {
                 return new Action(false, true, turningAngle);
             }
-
         } else if(state.state == CarState.State.LEFT){
             return new Action(true, false, turningAngle);
         } else {
-            return new Action(true, false, turningAngle);
+            return new Action(true, false, turningAngle + 3f);
         }
     }
 

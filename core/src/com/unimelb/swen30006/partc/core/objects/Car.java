@@ -7,7 +7,6 @@ import java.awt.geom.Rectangle2D;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.core.ISteppable;
-import com.unimelb.swen30006.partc.planning.CarState;
 import com.unimelb.swen30006.partc.render_engine.CarRenderer;
 import com.unimelb.swen30006.partc.roads.Intersection;
 

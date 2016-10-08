@@ -7,7 +7,8 @@ public class CarState {
     public enum State{
         LEFT,
         RIGHT,
-        STRAIGHT
+        STRAIGHT,
+        REACH_DEST
     }
 
     public  State state;

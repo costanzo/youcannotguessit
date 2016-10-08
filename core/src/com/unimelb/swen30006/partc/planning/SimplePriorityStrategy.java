@@ -21,11 +21,11 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         this.car = car;
     }
 
-    public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, Navigation.CarState state){
+    public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, CarState state){
         this.perceptionResponses = perceptionResponses;
-        if(state == Navigation.CarState.STRAIGHT){
+        if(state.state == CarState.State.STRAIGHT){
             return goStraight();
-        } else if(state == Navigation.CarState.LEFT){
+        } else if(state.state == CarState.State.LEFT){
             return goStraight();
         } else{
             return goStraight();
