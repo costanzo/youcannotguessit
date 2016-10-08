@@ -45,6 +45,7 @@ public class Road {
 		// Generate the road markers
 		ArrayList<RoadMarking> markings = generateRoadMarkers();
 		this.markers = markings.toArray(new RoadMarking[markings.size()]);
+		calculateRoadDirection();
 	}
 
 	public int getNumLanes(){
@@ -189,25 +190,44 @@ public class Road {
 		}
 		return false;
 	}
-	public HashMap<String, Intersection.Direction> getRoadDirection(){
+
+	public HashMap<String,Intersection.Direction> getRoad_direction(){
+		return this.road_direction;
+	}
+
+	private void calculateRoadDirection(){
 		if(getStartPos().getX()==getEndPos().getX()){
 			if(getStartPos().getY()>getEndPos().getY()){
-				road_direction.put("Start", Intersection.Direction.North);
-				road_direction.put("End", Intersection.Direction.South);
+				this.road_direction.put("Start", Intersection.Direction.North);
+				this.road_direction.put("End", Intersection.Direction.South);
 			}else{
-				road_direction.put("End", Intersection.Direction.North);
-				road_direction.put("Start", Intersection.Direction.South);			}
+				this.road_direction.put("End", Intersection.Direction.North);
+				this.road_direction.put("Start", Intersection.Direction.South);
+			}
 		}
 		else {
 			if (getStartPos().getX() > getEndPos().getY()) {
-				road_direction.put("Start", Intersection.Direction.East);
-				road_direction.put("End", Intersection.Direction.West);
+				this.road_direction.put("Start", Intersection.Direction.East);
+				this.road_direction.put("End", Intersection.Direction.West);
 			} else {
-				road_direction.put("End", Intersection.Direction.East);
-				road_direction.put("Start", Intersection.Direction.West);
+				this.road_direction.put("End", Intersection.Direction.East);
+				this.road_direction.put("Start", Intersection.Direction.West);
 			}
 		}
-		return road_direction;
+	}
+
+
+
+	public Intersection.Direction reverse_direction(Intersection.Direction input_direction){
+		if(input_direction== Intersection.Direction.North){
+			return Intersection.Direction.South;
+		}else if(input_direction== Intersection.Direction.South){
+			return Intersection.Direction.North;
+		}else if(input_direction== Intersection.Direction.West){
+			return Intersection.Direction.East;
+		}else{
+			return Intersection.Direction.West;
+		}
 	}
 
 }
