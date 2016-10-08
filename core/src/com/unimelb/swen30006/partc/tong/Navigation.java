@@ -25,12 +25,11 @@ public class Navigation {
 
 
 
-    public Navigation(Car car, Map map){
+    public Navigation(Car car, Map map, CarState state){
         this.currentRoad=map.findRoad(car.getPosition());
         this.currentIntersection = map.findIntersection(car.getPosition());
         this.car = car;
-        this.state = new CarState(CarState.State.STRAIGHT, 0, 0);
-        this.state = getState();
+        this.state = state;
         this.map = map;
         this.route = null;
     }

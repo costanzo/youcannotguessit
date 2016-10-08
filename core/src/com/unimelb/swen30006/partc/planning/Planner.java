@@ -29,7 +29,8 @@ public class Planner implements IPlanning {
         this.routePlanner = new SimpleRoutePlanner(dest, map);
         this.priorityStrategy = new SimplePriorityStrategy(car);
         this.handlingStrategy = new SimpleHandlingStrategy();
-        this.gps = new Navigation(car, map);
+        this.state = new CarState(CarState.State.STRAIGHT, 0, 0);
+        this.gps = new Navigation(car, map, this.state);
     }
 
     public boolean planRoute(Point2D.Double destination){
