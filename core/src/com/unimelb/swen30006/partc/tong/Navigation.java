@@ -45,7 +45,7 @@ public class Navigation {
         }else{
             state.setState(CarState.State.STRAIGHT);
             state.setAngle(car.getAngleDifference());
-            state.setShift(currentRoad.minDistanceTo(car.getPosition()));
+            state.setShift(get_shift(map.findRoad(this.car.getPosition())));
         }
         return state;
     }
@@ -124,6 +124,24 @@ public class Navigation {
         return state;
     }
 
+    private float get_shift(Road currentRoad){
+        if(currentRoad.getEndPos().getY()==currentRoad.getStartPos().getY()){
+            float midpoint = (float)currentRoad.getStartPos().getY();
+            if(this.car.adjustrotation()<=90&&this.car.adjustrotation()>=-90){
+
+                return ((float)this.car.getPosition().getY()-midpoint);
+            }else{
+                return (midpoint-(float)this.car.getPosition().getY());
+            }
+        }else{
+            float midpoint = (float) currentRoad.getStartPos().getX()+currentRoad.getWidth();
+            if(this.car.adjustrotation()>=0&&this.car.adjustrotation()<=180){
+                return (midpoint-(float)this.car.getPosition().getX());
+            }else{
+                return ((float)this.car.getPosition().getX()-midpoint);
+            }
+        }
+    }
 
 }
 

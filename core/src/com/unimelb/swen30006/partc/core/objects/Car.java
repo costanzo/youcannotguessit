@@ -222,18 +222,10 @@ public class Car extends WorldObject implements ISteppable {
 	public float getAngleDifference(){
 		Intersection.Direction movingdirection = getMovingDirection();
 		float adjustrotation = adjustrotation();
-		if(movingdirection== Intersection.Direction.North){
+		if(movingdirection== Intersection.Direction.North||movingdirection== Intersection.Direction.South){
 			return (90-adjustrotation);
-		}else if (movingdirection== Intersection.Direction.South){
-			return (-90-adjustrotation);
-		}else if(movingdirection== Intersection.Direction.East){
-			return (adjustrotation);
 		}else{
-			if(adjustrotation>0){
-				return (-180+adjustrotation);
-			}else{
-				return (180+adjustrotation);
-			}
+			return adjustrotation;
 		}
 	}
 
