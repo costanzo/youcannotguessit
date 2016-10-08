@@ -28,8 +28,9 @@ public class Navigation {
     public Navigation(Car car, Map map){
         this.currentRoad=map.findRoad(car.getPosition());
         this.currentIntersection = map.findIntersection(car.getPosition());
-        this.state = getState();
         this.car = car;
+        this.state = new CarState(CarState.State.STRAIGHT, 0, 0);
+        this.state = getState();
         this.map = map;
         this.route = null;
     }

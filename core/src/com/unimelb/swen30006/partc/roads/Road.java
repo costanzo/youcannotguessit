@@ -45,7 +45,6 @@ public class Road {
 		// Generate the road markers
 		ArrayList<RoadMarking> markings = generateRoadMarkers();
 		this.markers = markings.toArray(new RoadMarking[markings.size()]);
-		calculateRoadDirection();
 	}
 
 	public int getNumLanes(){
@@ -194,29 +193,6 @@ public class Road {
 	public HashMap<String,Intersection.Direction> getRoad_direction(){
 		return this.road_direction;
 	}
-
-	private void calculateRoadDirection(){
-		if(getStartPos().getX()==getEndPos().getX()){
-			if(getStartPos().getY()>getEndPos().getY()){
-				this.road_direction.put("Start", Intersection.Direction.North);
-				this.road_direction.put("End", Intersection.Direction.South);
-			}else{
-				this.road_direction.put("End", Intersection.Direction.North);
-				this.road_direction.put("Start", Intersection.Direction.South);
-			}
-		}
-		else {
-			if (getStartPos().getX() > getEndPos().getY()) {
-				this.road_direction.put("Start", Intersection.Direction.East);
-				this.road_direction.put("End", Intersection.Direction.West);
-			} else {
-				this.road_direction.put("End", Intersection.Direction.East);
-				this.road_direction.put("Start", Intersection.Direction.West);
-			}
-		}
-	}
-
-
 
 	public Intersection.Direction reverse_direction(Intersection.Direction input_direction){
 		if(input_direction== Intersection.Direction.North){
