@@ -11,6 +11,7 @@ import com.unimelb.swen30006.partc.tong.Navigation;
 public class SimpleHandlingStrategy implements HandlingStrategy {
     public static float TURNING_SPEED = 10f;
     public static float TURNING_MARGIN = 1f;
+    public static float LANE_MARGIN = 5f;
 
     private Car car;
 
@@ -32,13 +33,26 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
                 return new Action(false, true, turningAngle);
             }
         } else if(state.state == CarState.State.LEFT){
-            return new Action(true, false, turningAngle);
+            if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
+                return new Action(false, true, turningAngle);
+            } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
+                return new Action(true, false, turningAngle);
+            } else {
+                return new Action(false, false, turningAngle);
+            }
         } else {
-            return new Action(true, false, turningAngle + 3f);
+            if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
+                return new Action(false, true, turningAngle+3f);
+            } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
+                return new Action(true, false, turningAngle+3f);
+            } else {
+                return new Action(false, false, turningAngle+3f);
+            }
         }
     }
 
-    public float adjustPosture(float angle, float posShift){
+    public float adjustPosture(float angle, float shift){
+        float posShift = shift - LANE_MARGIN;
         if(angle >= 0 && posShift >= 0){
             return 0-angle;
         } else if( angle < 0 && posShift >= 0){
