@@ -13,6 +13,8 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     public static float TURNING_MARGIN = 1f;
     public static float LANE_MARGIN = 5f;
 
+    public static float TURNING_RATE = 0.3f;
+
     private Car car;
 
     public SimpleHandlingStrategy(Car car){
@@ -20,8 +22,8 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     }
 
     public Action getAction(PerceptionResponse perceptionResponse, CarState state){
-        float turningAngle = adjustPosture(state.angle, state.shift);
-
+        //float turningAngle = adjustPosture(state.angle, state.shift);
+        float turningAngle = state.angle;
         if(state.state == CarState.State.STRAIGHT){
             if(perceptionResponse == null){
                 return new Action(true, false, turningAngle);
@@ -38,24 +40,24 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             }
         } else if(state.state == CarState.State.LEFT){
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
-                return new Action(false, true, turningAngle);
+                return new Action(false, true, turningAngle/10);
             } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
-                return new Action(true, false, turningAngle);
+                return new Action(true, false, turningAngle/10);
             } else {
-                return new Action(false, false, turningAngle);
+                return new Action(false, false, turningAngle/10);
             }
         } else {
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
-                return new Action(false, true, turningAngle+3f);
+                return new Action(false, true, -TURNING_RATE);
             } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
-                return new Action(true, false, turningAngle+3f);
+                return new Action(true, false, -TURNING_RATE);
             } else {
-                return new Action(false, false, turningAngle+3f);
+                return new Action(false, false, -TURNING_RATE);
             }
         }
     }
 
-    public float adjustPosture(float angle, float shift){
+    private float adjustPosture(float angle, float shift){
         float posShift = shift - LANE_MARGIN;
         if(angle >= 0 && posShift >= 0){
             return 0-angle;
