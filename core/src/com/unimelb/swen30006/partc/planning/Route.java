@@ -18,6 +18,8 @@ public class Route {
     public Route(Road[] roads, Intersection[] intersections){
         this.roads = roads;
         this.intersections = intersections;
+
+        System.out.println(this.intersections[0].roads.get(Intersection.Direction.East));
     }
 
     public Road[] getRoads() {

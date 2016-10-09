@@ -11,9 +11,9 @@ import com.unimelb.swen30006.partc.tong.Navigation;
 public class SimpleHandlingStrategy implements HandlingStrategy {
     public static float TURNING_SPEED = 6f;
     public static float TURNING_MARGIN = 1f;
-    public static float LANE_MARGIN = 5f;
 
     public static float TURNING_RATE = 0.3f;
+    public static float LEFT_TURN = 6f;
 
     private Car car;
 
@@ -38,8 +38,6 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             if(perceptionResponse == null){
                 return new Action(true, false, turn);
             } else if(perceptionResponse.objectType == PerceptionResponse.Classification.TrafficLight){
-                boolean ac = false;
-                boolean br = false;
                 if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
                     return new Action(false, true, turn);
                 } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
@@ -53,11 +51,11 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             }
         } else if(state.state == CarState.State.LEFT){
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
-                return new Action(false, true, TURNING_RATE);
+                return new Action(false, true, LEFT_TURN);
             } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
-                return new Action(true, false, TURNING_RATE);
+                return new Action(true, false, LEFT_TURN);
             } else {
-                return new Action(false, false, TURNING_RATE);
+                return new Action(false, false, LEFT_TURN);
             }
         } else {
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
@@ -70,16 +68,4 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
         }
     }
 
-    private float adjustPosture(float angle, float shift){
-        float posShift = shift - LANE_MARGIN;
-        if(angle >= 0 && posShift >= 0){
-            return 0-angle;
-        } else if( angle < 0 && posShift >= 0){
-            return angle/2;
-        } else if(angle >= 0 && posShift < 0){
-            return angle/2;
-        } else{
-            return 0-angle;
-        }
-    }
 }

@@ -77,7 +77,13 @@ public class Map {
         for(Intersection.Direction d : dirs){
             Road r = intersection.roads.get(d);
             if(r.equals(nextEntry)){
-                return d;
+                if(d == Intersection.Direction.East){
+                    return Intersection.Direction.West;
+                } else if(d == Intersection.Direction.West){
+                    return Intersection.Direction.East;
+                } else{
+                    return d;
+                }
             }
         }
 
