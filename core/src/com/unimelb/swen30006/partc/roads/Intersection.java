@@ -72,4 +72,8 @@ public final class Intersection {
 		r.setColor(old);
 	}
 
+	public String toString(){
+		return "In (" + this.pos.getX()+", "+ this.pos.getY() + ")";
+	}
+
 }

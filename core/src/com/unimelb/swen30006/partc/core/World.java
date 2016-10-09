@@ -89,7 +89,7 @@ public class World implements ISteppable {
 		this.cars = new Car[1];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
 
-		Planner planner = new Planner(cars[0], new Point2D.Double(165, 180), new Map(roads, intersections));
+		Planner planner = new Planner(cars[0], new Point2D.Double(295, 180), new Map(roads, intersections));
 //		this.controllers[0] = new AIController(cars[0], planner, new PerceptionForTesting(this));
 		this.controllers[0] = new KeyboardController(cars[0], planner, new PerceptionForTesting(this));
 		// Remaning variables

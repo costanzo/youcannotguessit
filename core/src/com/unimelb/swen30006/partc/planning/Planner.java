@@ -37,10 +37,6 @@ public class Planner implements IPlanning {
 
     public boolean planRoute(Point2D.Double destination){
         this.route = routePlanner.getRoute(car.getPosition());
-//        Road[] rs = this.route.getRoads();
-//        for(Road r : rs){
-//            System.out.println(r);
-//        }
         gps.setRoute(this.route);
         if(this.route == null){
             return false;
@@ -55,11 +51,8 @@ public class Planner implements IPlanning {
         }
 
         gps.setState();
-        //System.out.println(this.state);
         PerceptionResponse pr = this.priorityStrategy.getHighesPriority(results, new CarState(CarState.State.STRAIGHT, 0, 0));
         Action action = this.handlingStrategy.getAction(pr,this.state);
-        //System.out.print(car.getVelocity().len());
-        //System.out.println(action);
         action.takeAction(this.car);
 
         this.car.update(delta);

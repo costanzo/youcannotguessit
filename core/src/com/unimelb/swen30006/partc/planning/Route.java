@@ -19,7 +19,6 @@ public class Route {
         this.roads = roads;
         this.intersections = intersections;
 
-        System.out.println(this.intersections[0].roads.get(Intersection.Direction.East));
     }
 
     public Road[] getRoads() {
@@ -83,8 +82,15 @@ public class Route {
     }
 
     public String toString(){
-        return "You will pass " + roads.length +
-                " roads and " + intersections.length +
-                " intersections!";
+        String out = "";
+        for(Road r : this.roads){
+            out += r.toString();
+            out += "\n";
+        }
+        for(Intersection i : this.intersections){
+            out += i.toString();
+            out += "\n";
+        }
+        return out;
     }
 }

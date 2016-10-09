@@ -13,7 +13,7 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     public static float TURNING_MARGIN = 1f;
 
     public static float TURNING_RATE = 0.3f;
-    public static float LEFT_TURN = 6f;
+    public static float LEFT_TURN = 5f;
 
     private Car car;
 

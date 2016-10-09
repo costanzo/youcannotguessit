@@ -49,15 +49,15 @@ public class Navigation {
             previousRoad = currentRoad;
         }
         this.currentRoad=route.findCurrentRoad(car.getPosition());
-        if(currentRoad==null) {
+        Intersection its = route.findCurrentIntersection(car.getPosition());
+        if(its != null){
+            this.currentRoad = null;
+        }
+        if(currentRoad ==null) {
             this.nextRoad = route.nextRoad(previousRoad);
             setNextState();
         }else{
-            nextRoad = null;
             setStateOnRoad();
-//            state.setState(CarState.State.STRAIGHT);
-//            state.setAngle(getAngleDifference(currentRoad));
-//            state.setShift(get_shift(map.findRoad(this.car.getPosition())));
         }
     }
 
@@ -140,7 +140,7 @@ public class Navigation {
                 state.setAngle(90f+adjustRotation);
             else if(moving_direction == Intersection.Direction.North)
                 state.setAngle(adjustRotation-90f);
-            else if(moving_direction == Intersection.Direction.West)
+            else if(moving_direction == Intersection.Direction.East)
                 state.setAngle(adjustRotation);
             else {
                 if (adjustRotation > 0)
