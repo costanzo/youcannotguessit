@@ -21,6 +21,8 @@ public class SimpleRoutePlanner implements RoutePlanner {
     public Route getRoute(Point2D.Double departurePosition){
         Road currentRoad = map.findRoad(departurePosition);
         Road destinationRoad = map.findRoad(this.destination);
+        System.out.println(destinationRoad);
+        System.out.println();
         if(destinationRoad == null){
             return null;
         }
@@ -83,9 +85,11 @@ public class SimpleRoutePlanner implements RoutePlanner {
         Road closest = null;
         float minDist = Integer.MAX_VALUE;
         for(Road r : rs){
-            float dist = roadDistance(r, dest);
+            //float dist = roadDistance(r, dest);
+            float dist = r.minDistanceTo(this.destination);
             if(dist < minDist){
                 closest = r;
+                minDist = dist;
             }
         }
         return closest;

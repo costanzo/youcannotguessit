@@ -62,7 +62,7 @@ public class Map {
         }
 
         for(Intersection intersection : intersections){
-            if(i1.distance(intersection.pos)<30f){
+            if(i1.distance(intersection.pos)<40f){
                 return intersection;
             }
         }

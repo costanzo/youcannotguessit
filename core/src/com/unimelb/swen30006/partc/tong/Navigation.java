@@ -16,7 +16,7 @@ import java.awt.geom.Point2D;
 
 
 public class Navigation {
-    public static float DEST_DISTANCE = 10f;
+    public static float DEST_DISTANCE = 30f;
 
     private Road previousRoad;
     private Road currentRoad;
