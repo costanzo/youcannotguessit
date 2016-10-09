@@ -46,7 +46,7 @@ public class Navigation {
         this.currentRoad=route.findCurrentRoad(car.getPosition());
         if(currentRoad==null) {
             this.nextRoad = route.nextRoad(previousRoad);
-            state=getNextState();
+            setNextState();
         }else{
             nextRoad = null;
             setStateOnRoad();
@@ -113,12 +113,28 @@ public class Navigation {
 
 
 //    based on the current road and next road, get the new state.
-    private CarState getNextState(){
+    private void setNextState(){
         Intersection.Direction next_road_direction = map.findTurningDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
         state.setShift(get_shift(nextRoad));
 
         float adjustRotation = car.adjustrotation();
+        if(moving_direction == next_road_direction){
+            if(moving_direction == Intersection.Direction.South)
+                state.setAngle(90f+adjustRotation);
+            else if(moving_direction == Intersection.Direction.North)
+                state.setAngle(adjustRotation-90f);
+            else if(moving_direction == Intersection.Direction.West)
+                state.setAngle(adjustRotation);
+            else {
+                if (adjustRotation > 0)
+                    state.setAngle(180f - adjustRotation);
+                else
+                    state.setAngle(180f + adjustRotation);
+            }
+            state.setState(CarState.State.STRAIGHT);
+            return ;
+        }
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
                 rotation_goal=180;
@@ -160,11 +176,9 @@ public class Navigation {
                 state.setState(CarState.State.RIGHT);
             }
         }else{
-            state.setAngle(adjustRotation);
-            state.setState(CarState.State.STRAIGHT);
+
 
         }
-        return state;
     }
 
     private float get_shift(Road currentRoad){

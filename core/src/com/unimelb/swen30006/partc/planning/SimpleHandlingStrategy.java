@@ -25,26 +25,37 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
         //float turningAngle = adjustPosture(state.angle, state.shift);
         float turningAngle = state.angle;
         if(state.state == CarState.State.STRAIGHT){
+            float turn = 0;s
+            if(turningAngle == 0)
+                turn = 0;
+            else if (turningAngle < 0)
+                turn = TURNING_RATE;
+            else
+                turn = -TURNING_RATE;
+
             if(perceptionResponse == null){
-                return new Action(true, false, turningAngle);
+                return new Action(true, false, turn);
             } else if(perceptionResponse.objectType == PerceptionResponse.Classification.TrafficLight){
+                boolean ac = false;
+                boolean br = false;
                 if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
-                    return new Action(false, true, turningAngle);
+                    return new Action(false, true, turn);
                 } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
-                    return new Action(true, false, turningAngle);
+                    return new Action(true, false, turn);
                 } else {
-                    return new Action(false, false, turningAngle);
+                    return new Action(false, false, turn);
                 }
             } else {
-                return new Action(false, true, turningAngle);
+                return new Action(false, true, turn);
+
             }
         } else if(state.state == CarState.State.LEFT){
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
-                return new Action(false, true, turningAngle/10);
+                return new Action(false, true, TURNING_RATE);
             } else if(this.car.getVelocity().len() < (TURNING_SPEED - TURNING_MARGIN)){
-                return new Action(true, false, turningAngle/10);
+                return new Action(true, false, TURNING_RATE);
             } else {
-                return new Action(false, false, turningAngle/10);
+                return new Action(false, false, TURNING_RATE);
             }
         } else {
             if(this.car.getVelocity().len() > (TURNING_SPEED + TURNING_MARGIN)){
