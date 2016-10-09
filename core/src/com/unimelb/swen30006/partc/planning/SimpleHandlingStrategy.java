@@ -9,11 +9,15 @@ import com.unimelb.swen30006.partc.tong.Navigation;
  * Created by Sean on 10/6/2016.
  */
 public class SimpleHandlingStrategy implements HandlingStrategy {
-    public static float TURNING_SPEED = 10f;
+    public static float TURNING_SPEED = 6f;
     public static float TURNING_MARGIN = 1f;
     public static float LANE_MARGIN = 5f;
 
     private Car car;
+
+    public SimpleHandlingStrategy(Car car){
+        this.car = car;
+    }
 
     public Action getAction(PerceptionResponse perceptionResponse, CarState state){
         float turningAngle = adjustPosture(state.angle, state.shift);

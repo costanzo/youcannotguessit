@@ -34,6 +34,21 @@ public class Action {
         car.turn(this.angle);
     }
 
+    public String toString(){
+        String out = "";
+        if(accelerate){
+            out += "Accelerate ";
+        }
+
+        if(brake){
+            out += " Brake ";
+        }
+
+        out += this.angle;
+
+        return out;
+    }
+
 //
 //    public void rotate (Car car, float delta, float goal_angle){
 //        float current_rotation = car.getRotation();
