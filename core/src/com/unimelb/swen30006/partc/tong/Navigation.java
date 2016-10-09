@@ -1,5 +1,6 @@
 package com.unimelb.swen30006.partc.tong;
 
+import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.planning.CarState;
 import com.unimelb.swen30006.partc.planning.Map;
@@ -38,7 +39,7 @@ public class Navigation {
     }
 
 
-    public CarState getState(){
+    public void setState(){
         if(currentRoad!=null){
             previousRoad = currentRoad;
         }
@@ -48,11 +49,65 @@ public class Navigation {
             state=getNextState();
         }else{
             nextRoad = null;
-            state.setState(CarState.State.STRAIGHT);
-            state.setAngle(getAngleDifference(currentRoad));
-            state.setShift(get_shift(map.findRoad(this.car.getPosition())));
+            setStateOnRoad();
+//            state.setState(CarState.State.STRAIGHT);
+//            state.setAngle(getAngleDifference(currentRoad));
+//            state.setShift(get_shift(map.findRoad(this.car.getPosition())));
         }
-        return state;
+    }
+
+    private void setStateOnRoad(){
+        Vector2 rotatedCarDir = null;
+        float x = this.car.getDirection().x;
+        float y = this.car.getDirection().y;
+        double shift = 0;
+        if(this.currentRoad.getStartPos().getX() == this.currentRoad.getEndPos().getX()) {
+            //vertical road
+            double mid = this.currentRoad.getStartPos().getX();
+            shift = this.car.getPosition().getX() - mid;
+            if (shift < 0) {
+                //rotate clock-wise 90 degree
+                rotatedCarDir = new Vector2(y, 0-x);
+                shift = 0-shift;
+            } else {
+                //rotate clock-wise 270 degree
+                rotatedCarDir = new Vector2(0-y, x);
+            }
+        } else{
+            //horizonal road
+            double mid = this.currentRoad.getStartPos().getY();
+            shift = this.car.getPosition().getY() - mid;
+            if(shift > 0){
+                //don't need to rotate
+                rotatedCarDir = new Vector2(x, y);
+            } else{
+                //rotate clock-wise 180 degree
+                rotatedCarDir = new Vector2(0-x, 0-y);
+                shift = 0 - shift;
+            }
+        }
+
+        double angle = 0;
+        x = rotatedCarDir.x;
+        y = rotatedCarDir.y;
+
+        if(x >= 0 && y >= 0){
+            //First quadrant
+             angle = Math.asin(y) * 180/Math.PI;
+        } else if( x < 0 && y >= 0){
+            //second quadrant
+            angle = 180 - Math.asin(y) * 180/Math.PI;
+        } else if( x >= 0 && y < 0){
+            //fourth quadrant
+            angle = Math.asin(y) * 180/Math.PI;
+        } else{
+            //third quadrant
+            angle = 0 - 180 - Math.asin(y) * 180/Math.PI;
+        }
+
+        this.state.setAngle((float)angle);
+        this.state.setShift((float)shift);
+        this.state.setState(CarState.State.STRAIGHT);
     }
 
 
@@ -62,6 +117,7 @@ public class Navigation {
         Intersection.Direction next_road_direction = map.findTurningDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
         state.setShift(get_shift(nextRoad));
+
         float adjustRotation = car.adjustrotation();
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
