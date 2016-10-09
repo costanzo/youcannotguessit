@@ -24,8 +24,10 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     public Action getAction(PerceptionResponse perceptionResponse, CarState state){
         //float turningAngle = adjustPosture(state.angle, state.shift);
         float turningAngle = state.angle;
-        if(state.state == CarState.State.STRAIGHT){
-            float turn = 0;s
+        if(state.state == CarState.State.REACH_DEST){
+            return new Action(false, true, 0);
+        }else if(state.state == CarState.State.STRAIGHT){
+            float turn = 0;
             if(turningAngle == 0)
                 turn = 0;
             else if (turningAngle < 0)

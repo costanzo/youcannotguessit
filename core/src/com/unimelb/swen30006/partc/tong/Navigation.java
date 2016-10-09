@@ -8,12 +8,15 @@ import com.unimelb.swen30006.partc.planning.Route;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
 
+import java.awt.geom.Point2D;
+
 /**
  * Created by tong on 16-10-1.
  */
 
 
 public class Navigation {
+    public static float DEST_DISTANCE = 10f;
 
     private Road previousRoad;
     private Road currentRoad;
@@ -23,14 +26,16 @@ public class Navigation {
     private Map map;
     private Road nextRoad;
     private float rotation_goal;
+    private Point2D.Double dest;
 
 
 
-    public Navigation(Car car, Map map, CarState state){
+    public Navigation(Car car, Map map, CarState state, Point2D.Double dest){
         this.car = car;
         this.state = state;
         this.map = map;
         this.route = null;
+        this.dest = dest;
         this.currentRoad = map.findRoad(car.getPosition());
     }
 
@@ -57,6 +62,11 @@ public class Navigation {
     }
 
     private void setStateOnRoad(){
+        if(reachDest()){
+            this.state.setState(CarState.State.REACH_DEST);
+            return;
+        }
+
         Vector2 rotatedCarDir = null;
         float x = this.car.getDirection().x;
         float y = this.car.getDirection().y;
@@ -110,6 +120,12 @@ public class Navigation {
         this.state.setState(CarState.State.STRAIGHT);
     }
 
+    public boolean reachDest(){
+        if(this.dest.distance(car.getPosition()) < DEST_DISTANCE){
+            return true;
+        }
+        return false;
+    }
 
 
 //    based on the current road and next road, get the new state.
