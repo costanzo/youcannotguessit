@@ -14,8 +14,8 @@ import com.unimelb.swen30006.partc.roads.Road;
 
 public class Navigation {
 
+    private Road previousRoad;
     private Road currentRoad;
-    private Intersection currentIntersection;
     private CarState state;
     private Car car;
     private Route route;
@@ -26,12 +26,11 @@ public class Navigation {
 
 
     public Navigation(Car car, Map map, CarState state){
-        this.currentRoad=map.findRoad(car.getPosition());
-        this.currentIntersection = map.findIntersection(car.getPosition());
         this.car = car;
         this.state = state;
         this.map = map;
         this.route = null;
+        this.currentRoad = map.findRoad(car.getPosition());
     }
 
     public void setRoute(Route route){
@@ -40,84 +39,72 @@ public class Navigation {
 
 
     public CarState getState(){
-        if(!onCurrentRoad()&&!onNextRoad()) {
+        if(currentRoad!=null){
+            previousRoad = currentRoad;
+        }
+        this.currentRoad=route.findCurrentRoad(car.getPosition());
+        if(currentRoad==null) {
+            this.nextRoad = route.nextRoad(previousRoad);
             state=getNextState();
         }else{
+            nextRoad = null;
             state.setState(CarState.State.STRAIGHT);
-            state.setAngle(car.getAngleDifference());
+            state.setAngle(getAngleDifference(currentRoad));
             state.setShift(get_shift(map.findRoad(this.car.getPosition())));
         }
         return state;
     }
 
-    //check the car is on the current road
-    private boolean onCurrentRoad(){
-        if(currentRoad.containsPoint(car.getPosition())){
-            return true;
-        }else {
-            return false;
-        }
-    }
-    //check the car is on the next road
-    private boolean onNextRoad(){
-        if(nextRoad!=null){
-            if(nextRoad.containsPoint(car.getPosition())) return true;
-        }
-        return false;
-
-    }
 
 
 //    based on the current road and next road, get the new state.
     private CarState getNextState(){
-        nextRoad = route.nextRoad(currentRoad);
-        Intersection.Direction next_road_direction = map.findTurningDirection(currentRoad,nextRoad);
+        Intersection.Direction next_road_direction = map.findTurningDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
-        state.setShift(nextRoad.minDistanceTo(car.getPosition()));
-        float adjustrotation = car.adjustrotation();
+        state.setShift(get_shift(nextRoad));
+        float adjustRotation = car.adjustrotation();
         if(moving_direction== Intersection.Direction.North){
             if(next_road_direction== Intersection.Direction.West){
                 rotation_goal=180;
-                state.setAngle(adjustrotation-rotation_goal);
+                state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.LEFT);
             }else if (next_road_direction == Intersection.Direction.East){
                 rotation_goal=0;
-                state.setAngle(adjustrotation);
+                state.setAngle(adjustRotation);
                 state.setState(CarState.State.RIGHT);
             }
         }else if (moving_direction== Intersection.Direction.South){
             if(next_road_direction== Intersection.Direction.West){
                 rotation_goal=-180;
-                state.setAngle(adjustrotation-rotation_goal);
+                state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.RIGHT);
             }else if (next_road_direction == Intersection.Direction.East){
                 rotation_goal=0;
-                state.setAngle(adjustrotation);
+                state.setAngle(adjustRotation);
                 state.setState(CarState.State.LEFT);
             }
         }else if (moving_direction== Intersection.Direction.West){
             if(next_road_direction== Intersection.Direction.North){
                 rotation_goal=90;
-                state.setAngle(rotation_goal-adjustrotation);
+                state.setAngle(rotation_goal-adjustRotation);
                 state.setState(CarState.State.RIGHT);
             }else if (next_road_direction== Intersection.Direction.South){
                 rotation_goal=-90;
-                state.setAngle(adjustrotation-rotation_goal);
+                state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.LEFT);
             }
         }else if (moving_direction== Intersection.Direction.East) {
             if (next_road_direction == Intersection.Direction.North) {
-
                 rotation_goal = 90;
-                state.setAngle(adjustrotation-rotation_goal);
+                state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.LEFT);
             } else if (next_road_direction == Intersection.Direction.South) {
                 rotation_goal = -90;
-                state.setAngle(adjustrotation-rotation_goal);
+                state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.RIGHT);
             }
         }else{
-            state.setAngle(adjustrotation);
+            state.setAngle(adjustRotation);
             state.setState(CarState.State.STRAIGHT);
 
         }
@@ -134,12 +121,21 @@ public class Navigation {
                 return (midpoint-(float)this.car.getPosition().getY());
             }
         }else{
-            float midpoint = (float) currentRoad.getStartPos().getX()+currentRoad.getWidth();
+            float midpoint = (float) currentRoad.getStartPos().getX();
             if(this.car.adjustrotation()>=0&&this.car.adjustrotation()<=180){
                 return (midpoint-(float)this.car.getPosition().getX());
             }else{
                 return ((float)this.car.getPosition().getX()-midpoint);
             }
+        }
+    }
+    //calculate the angle difference between the angle the car towards and the angle of it should be
+    private float getAngleDifference(Road road){
+        float adjustRotation = car.adjustrotation();
+        if(road.getStartPos().getX()==road.getEndPos().getX()){
+            return (90-adjustRotation);
+        }else{
+            return adjustRotation;
         }
     }
 
