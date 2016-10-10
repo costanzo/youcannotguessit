@@ -1,23 +1,26 @@
 package com.unimelb.swen30006.partc.planning;
 
+import com.badlogic.gdx.graphics.*;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.tong.Action;
-import com.unimelb.swen30006.partc.tong.Navigation;
+
 
 /**
  * Created by Sean on 10/6/2016.
  */
 public class SimpleHandlingStrategy implements HandlingStrategy {
-    public static final float TURNING_SPEED = 6f;
+    public static final float TURNING_SPEED = 10f;
 
     public static final float TURNING_RATE = 0.3f;
-    public static final float LEFT_TURN = 6f;
+    public static final float LEFT_TURN = 2f;
+    public static final float RIGHT_TURN = 0.6f;
 
     public static final float LANE_MARGIN = 5f;
     public static final float ADJUST_TURNING_THRES = 0.5f;
 
     public static final float ADJUST_COEFF = 4f;
+    public static final float TURNING_COEFF = 10f;
 
     private Car car;
 
@@ -43,7 +46,7 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             if(perceptionResponse == null){
                 float sh = state.getShift();
                 if(sh < 0 || Math.abs(turningAngle) > ADJUST_TURNING_THRES  ) {
-                    return new Action(true, false, turn);
+                    return new Action(true, false, turn * Math.abs(turningAngle)/TURNING_COEFF);
                 } else{
                     if(sh > LANE_MARGIN){
                         return new Action(true, false, -TURNING_RATE * (sh-LANE_MARGIN) * ADJUST_COEFF);
@@ -54,7 +57,15 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
                     }
                 }
             } else if(perceptionResponse.objectType == PerceptionResponse.Classification.TrafficLight){
-                return new Action(false, true, turn);
+                if(perceptionResponse.information.get("state") != Color.GREEN){
+                    return new Action(false, true, turn);
+                } else {
+                    if(this.car.getVelocity().len() > TURNING_SPEED){
+                        return new Action(false, true, turn);
+                    } else{
+                        return new Action(true, false, turn);
+                    }
+                }
             } else {
                 return new Action(false, true, turn);
 
@@ -69,11 +80,11 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             }
         } else {
             if(this.car.getVelocity().len() > TURNING_SPEED){
-                return new Action(false, true, -TURNING_RATE);
+                return new Action(false, true, -RIGHT_TURN);
             } else if(this.car.getVelocity().len() < TURNING_SPEED){
-                return new Action(true, false, -TURNING_RATE);
+                return new Action(true, false, -RIGHT_TURN);
             } else {
-                return new Action(false, false, -TURNING_RATE);
+                return new Action(false, false, -RIGHT_TURN);
             }
         }
     }

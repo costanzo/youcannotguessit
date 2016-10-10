@@ -97,10 +97,6 @@ public class SimplePriorityStrategy implements PriorityStrategy {
                 trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){
             trafficLight = null;
         }
-
-        if(trafficLight != null && trafficLight.information.get("state") == Color.GREEN) {
-            trafficLight = null;
-        }
         return trafficLight;
     }
 
