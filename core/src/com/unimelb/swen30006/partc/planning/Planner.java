@@ -41,7 +41,6 @@ public class Planner implements IPlanning {
         if(this.route == null){
             return false;
         } else {
-            System.out.println(this.route);
             return true;
         }
     }
@@ -51,7 +50,9 @@ public class Planner implements IPlanning {
             planRoute(this.destination);
         } else {
             gps.setState();
-            PerceptionResponse pr = this.priorityStrategy.getHighesPriority(results, new CarState(CarState.State.STRAIGHT, 0, 0));
+            //System.out.println(this.state);
+            PerceptionResponse pr = this.priorityStrategy.getHighesPriority(results, this.state);
+            System.out.println(pr);
             Action action = this.handlingStrategy.getAction(pr, this.state);
             action.takeAction(this.car);
         }

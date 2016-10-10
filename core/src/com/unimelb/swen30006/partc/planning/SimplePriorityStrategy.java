@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class SimplePriorityStrategy implements PriorityStrategy {
     public static float SAFETY_DISTANCE = 30f;
-    public static float TRAFFIC_REACTION_DISTANCE = 70f;
+    public static float TRAFFIC_REACTION_DISTANCE = 50f;
 
     private Car car;
     private PerceptionResponse[] perceptionResponses;
@@ -24,9 +24,11 @@ public class SimplePriorityStrategy implements PriorityStrategy {
 
     public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, CarState state){
         this.perceptionResponses = perceptionResponses;
-        if(state.state == CarState.State.STRAIGHT){
+
+        CarState.State st = state.getState();
+        if(st == CarState.State.STRAIGHT){
             return goStraight();
-        } else if(state.state == CarState.State.LEFT){
+        } else if(st == CarState.State.LEFT){
             return goStraight();
         } else{
             return goStraight();
@@ -37,7 +39,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         PerceptionResponse obstacleAhead = getObstacleAhead();
         PerceptionResponse trafficLight  = trafficLight();
 
-        if(obstacleAhead != null){
+        if(obstacleAhead != null && obstacleAhead.objectType != PerceptionResponse.Classification.TrafficLight){
             return obstacleAhead;
         } else {
             return trafficLight;
@@ -71,38 +73,25 @@ public class SimplePriorityStrategy implements PriorityStrategy {
     }
 
     private PerceptionResponse trafficLight(){
-        int sum = 0;
         ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>(4);
+        Vector2 carDir = car.getDirection();
         for(PerceptionResponse pr : perceptionResponses){
             if(pr.objectType == PerceptionResponse.Classification.TrafficLight){
-                sum++;
-                trafficLights.add(pr);
+                if(carDir.dot(pr.direction) > 0){
+                    trafficLights.add(pr);
+                }
             }
         }
 
-        if( sum < 3 ) {
+        if( trafficLights.size() < 4 ) {
             return null;
         }
 
-        Vector2 carDirection = car.getDirection();
-        for(PerceptionResponse pr : trafficLights){
-            Vector2 lightDirection = new Vector2((float)(pr.position.getX()-car.getPosition().getX()),
-                    (float)(pr.position.getY()-car.getPosition().getY()));
-            if(carDirection.dot(lightDirection) < 0){
-                return null;
-            }
-        }
-
         PerceptionResponse trafficLight = null;
-        if(sum == 3){
-            PerceptionResponse pr = findMaxDist(trafficLights);
-            trafficLight = pr;
-        } else if(sum == 4){
-            PerceptionResponse pr = findMaxDist(trafficLights);
-            trafficLights.remove(pr);
-            pr = findMaxDist(trafficLights);
-            trafficLight = pr;
-        }
+        PerceptionResponse pr = findMaxDist(trafficLights);
+        trafficLights.remove(pr);
+        pr = findMaxDist(trafficLights);
+        trafficLight = pr;
 
         if(trafficLight != null &&
                 trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){

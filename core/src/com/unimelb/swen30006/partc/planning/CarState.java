@@ -11,9 +11,9 @@ public class CarState {
         REACH_DEST
     }
 
-    public  State state;
-    public  float angle;
-    public  float shift;
+    private State state;
+    private float angle;
+    private float shift;
 
     /*
     state: The state of the should be

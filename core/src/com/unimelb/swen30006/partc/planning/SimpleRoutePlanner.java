@@ -21,8 +21,6 @@ public class SimpleRoutePlanner implements RoutePlanner {
     public Route getRoute(Point2D.Double departurePosition){
         Road currentRoad = map.findRoad(departurePosition);
         Road destinationRoad = map.findRoad(this.destination);
-        System.out.println(destinationRoad);
-        System.out.println();
         if(destinationRoad == null){
             return null;
         }
