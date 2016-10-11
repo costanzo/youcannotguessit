@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
 
 public class Navigation {
     public static float DEST_DISTANCE = 30f;
+    public static float AVERG_SPEED = 10f;
 
     private Road previousRoad;
     private Road currentRoad;
@@ -220,17 +221,12 @@ public class Navigation {
         }
     }
 
-    private float est(){
-        float distance = total_distance();
-        float speed =10f;
+    private float eta(){
+        float distance = totalDistance();
 
-        if(speed!=0){
-            return distance/speed;
-        }else{
-            return -1;
-        }
+        return distance/AVERG_SPEED;
     }
-    private float total_distance(){
+    private float totalDistance(){
         if(!reachDest()) {
             float distance = 0;
             Intersection intersection;
@@ -243,8 +239,8 @@ public class Navigation {
                 distance =(float) (Math.abs (state.getPos().getX()- dest.getX())+Math.abs(state.getPos().getY()-dest.getY()));
                 return distance;
             }
-            distance += dist_from_point_to_intersection(state.getPos(), intersection);
 
+            distance += this.car.getPosition().distance(intersection.pos);
             for (int i = route.getIntersectionIndex(intersection); i < route.getIntersectionLength() - 1; i++) {
                 if (route.getIntersectionByIndex(i).pos.getX() == route.getIntersectionByIndex(i + 1).pos.getX()) {
                     distance += Math.abs(route.getIntersectionByIndex(i).pos.getY() - route.getIntersectionByIndex(i + 1).pos.getY());
@@ -252,19 +248,11 @@ public class Navigation {
                     distance += Math.abs(route.getIntersectionByIndex(i).pos.getX() - route.getIntersectionByIndex(i + 1).pos.getX());
                 }
             }
-            distance += dist_from_point_to_intersection(dest, route.getIntersectionByIndex(route.getIntersectionLength() - 1));
+            distance += dest.distance(route.getIntersectionByIndex(route.getIntersectionLength() - 1).pos);
             return distance;
         }else{
             return 0;
         }
-    }
-
-    private float dist_from_point_to_intersection(Point2D point,Intersection intersection){
-        double distance;
-        double x_difference = point.getX()-intersection.pos.getX();
-        double y_difference = point.getY()-intersection.pos.getY();
-        distance = Math.abs(x_difference)+Math.abs(y_difference);
-        return (float) distance;
     }
 
 }
