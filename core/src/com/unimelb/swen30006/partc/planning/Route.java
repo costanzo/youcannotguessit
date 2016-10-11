@@ -26,6 +26,10 @@ public class Route {
 
     }
 
+    public Intersection[] getIntersections(){
+        return intersections;
+    }
+
     public Road nextRoad(Road currentRoad){
         int i = getRoadIndex(currentRoad);
         if( i == (roads.length-1) ){
@@ -50,6 +54,24 @@ public class Route {
             // cannot find the road
             return null;
         }
+    }
+
+    public int getIntersectionIndex(Intersection intersection){
+        int i;
+        for(i=0;i<intersection.length;i++){
+            if(intersections[i].pos==intersection.pos){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getIntersectionLength(){
+        return  intersections.length;
+    }
+
+    public Intersection getIntersectionByIndex(int i){
+        return intersections[i];
     }
 
     private int getRoadIndex(Road road){
