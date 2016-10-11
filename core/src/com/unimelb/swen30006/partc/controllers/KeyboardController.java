@@ -21,25 +21,13 @@ public class KeyboardController extends Controller {
 
 	private final static float ROTATION_RATE = 150f;
 
-    // The interfaces used to update the world
-    private IPlanning planner ;
-    private IPerception perception;
 
-
-    public KeyboardController(Car car,IPlanning planner, IPerception perception) {
+    public KeyboardController(Car car) {
         super(car);
-        this.perception = perception;
-        this.planner = planner;
     }
 
 	@Override
 	public void update(float delta) {
-        // first updating perception
-        PerceptionResponse[] responses = perception.analyseSurroundings(car.getPosition());
-        // Finally update planner
-        planner.update(responses, World.VISIBILITY_RADIUS, delta);
-
-
         if (Gdx.input.isKeyPressed(Input.Keys.B)) {
             this.car.brake();
         }

@@ -3,6 +3,7 @@ package com.unimelb.swen30006.partc.core;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -85,14 +86,21 @@ public class World implements ISteppable {
 		buildQuadTree();
 
 		// Controllers and cars
-		this.controllers = new Controller[1];
-		this.cars = new Car[1];
+		this.controllers = new Controller[2];
+		this.cars = new Car[2];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
+		//add a new parking car as an obstacle
+		this.cars[1] = new Car(new Point2D.Double(120,145), 6, 10, Color.BLACK, 25f, 50f, 6f );
 
 		Planner planner = new Planner(cars[0], new Point2D.Double(340, 270), new Map(roads, intersections));
+		Planner planner2 = new Planner(cars[1], new Point2D.Double(310, 350), new Map(roads, intersections));
+
+
+//		this.controllers[1] = new KeyboardController(cars[1]);
 		this.controllers[0] = new AIController(cars[0], planner, new PerceptionForTesting(this));
-//		this.controllers[0] = new KeyboardController(cars[0], planner, new PerceptionForTesting(this));
-//		 Remaning variables
+		this.controllers[1] = new AIController(cars[1], planner2, new PerceptionForTesting(this));
+
+		// Remaning variables
 		this.worldTime = MIDDAY;
 		this.collisions = new ArrayList<Rectangle2D.Double>();
 	}
@@ -125,12 +133,21 @@ public class World implements ISteppable {
 		Point[] points = worldObjectTree.searchIntersect(xmin, ymin, xmax, ymax);
 
 		// Create an array of WorldObjects to return
-		WorldObject[] objects = new WorldObject[points.length];
-		for(int i=0; i<objects.length; i++){
-			Point p = points[i];
-			objects[i] = (WorldObject) p.getValue();
+		List<WorldObject> objects = new ArrayList<WorldObject>();
+		for(Point p:points){
+			objects.add((WorldObject) p.getValue());
 		}
-		return objects;
+		for(Car car:cars){
+			if (car.getPosition()!=pos
+					&&car.getPosition().getX() >= xmin
+					&&car.getPosition().getX() <= xmax
+					&&car.getPosition().getY() >= ymin
+					&&car.getPosition().getY() <= ymax){
+				objects.add(car);
+			}
+		}
+		
+		return objects.toArray(new WorldObject[objects.size()]);
 	}
 
 	/**
@@ -233,7 +250,7 @@ public class World implements ISteppable {
 		for(Car c: this.cars){
 			WorldObject[] objects = this.objectsAtPoint(c.getPosition());
 			for(WorldObject o: objects){
-				if(c.collidesWith(o)){
+				if(c.collidesWith(o) && c!=o){
 					this.collisions.add(o.boundary);
 					this.collisions.add(c.boundary);
 				}
