@@ -13,12 +13,12 @@ public class SimpleRoutePlanner implements RoutePlanner {
     private Point2D.Double destination;
     private Map map;
 
-    public SimpleRoutePlanner(Point2D.Double destination, Map map){
-        this.destination = destination;
+    public SimpleRoutePlanner(Map map){
         this.map = map;
     }
 
-    public Route getRoute(Point2D.Double departurePosition){
+    public Route getRoute(Point2D.Double departurePosition, Point2D.Double dest){
+        this.destination = dest;
         Road currentRoad = map.findRoad(departurePosition);
         Road destinationRoad = map.findRoad(this.destination);
         if(destinationRoad == null){

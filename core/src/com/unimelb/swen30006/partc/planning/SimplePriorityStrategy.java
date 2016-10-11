@@ -6,6 +6,7 @@ import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.tong.Navigation;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -14,12 +15,12 @@ import java.util.ArrayList;
 public class SimplePriorityStrategy implements PriorityStrategy {
     public static float SAFETY_DISTANCE = 30f;
     public static float TRAFFIC_REACTION_DISTANCE = 50f;
+    public static float SAFETY_WIDTH = 8f;
 
-    private Car car;
     private PerceptionResponse[] perceptionResponses;
 
-    public SimplePriorityStrategy(Car car) {
-        this.car = car;
+    public SimplePriorityStrategy() {
+        this.perceptionResponses = null;
     }
 
     public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, CarState state){
@@ -27,17 +28,17 @@ public class SimplePriorityStrategy implements PriorityStrategy {
 
         CarState.State st = state.getState();
         if(st == CarState.State.STRAIGHT){
-            return goStraight();
+            return goStraight(state);
         } else if(st == CarState.State.LEFT){
-            return goStraight();
+            return goStraight(state);
         } else{
-            return goStraight();
+            return goStraight(state);
         }
     }
 
-    private PerceptionResponse goStraight(){
-        PerceptionResponse obstacleAhead = getObstacleAhead();
-        PerceptionResponse trafficLight  = trafficLight();
+    private PerceptionResponse goStraight(CarState state){
+        PerceptionResponse obstacleAhead = getObstacleAhead(state.getDirection());
+        PerceptionResponse trafficLight  = trafficLight(state.getDirection());
 
         if(obstacleAhead != null && obstacleAhead.objectType != PerceptionResponse.Classification.TrafficLight){
             return obstacleAhead;
@@ -46,15 +47,11 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         }
     }
 
-    private PerceptionResponse getObstacleAhead(){
+    private PerceptionResponse getObstacleAhead(Vector2 carDirection){
         ArrayList<PerceptionResponse> prs = new ArrayList<PerceptionResponse>();
-        Vector2 carDirection = this.car.getDirection();
-        Vector2 obstacleDirection;
         for(PerceptionResponse pr : this.perceptionResponses){
-            obstacleDirection = new Vector2((float)(pr.position.x-this.car.getPosition().x),
-                    (float)(pr.position.y-this.car.getPosition().y));
-            float dis = obstacleDirection.dot(carDirection);
-            if((dis > 0) && (Math.sqrt(obstacleDirection.len2() - dis * dis)-pr.width/2) < this.car.getWidth()){
+            float dis = pr.direction.dot(carDirection);
+            if((dis > 0) && (Math.sqrt(pr.direction.len2() - dis * dis)-pr.width/2) < SAFETY_WIDTH){
                 prs.add(pr);
             }
         }
@@ -62,7 +59,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         PerceptionResponse closest = null;
         double dist = SAFETY_DISTANCE;
         for(PerceptionResponse pr : prs){
-            double prDist = pr.position.distance(this.car.getPosition());
+            double prDist = pr.direction.len();
             if(prDist < dist){
                 dist = prDist;
                 closest = pr;
@@ -72,9 +69,8 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         return closest;
     }
 
-    private PerceptionResponse trafficLight(){
+    private PerceptionResponse trafficLight(Vector2 carDir){
         ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>(4);
-        Vector2 carDir = car.getDirection();
         for(PerceptionResponse pr : perceptionResponses){
             if(pr.objectType == PerceptionResponse.Classification.TrafficLight){
                 if(carDir.dot(pr.direction) > 0){
@@ -94,7 +90,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         trafficLight = pr;
 
         if(trafficLight != null &&
-                trafficLight.position.distance(car.getPosition()) > TRAFFIC_REACTION_DISTANCE){
+                trafficLight.direction.len() > TRAFFIC_REACTION_DISTANCE){
             trafficLight = null;
         }
         return trafficLight;
@@ -104,7 +100,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         PerceptionResponse perceptionResponse = null;
         double maxDist = 0;
         for(PerceptionResponse pr : perceptionResponses){
-            double dist = car.getPosition().distance(pr.position);
+            double dist = pr.direction.len();
             if(dist > maxDist){
                 perceptionResponse = pr;
                 maxDist = dist;

@@ -1,6 +1,7 @@
 package com.unimelb.swen30006.partc.planning;
 
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.tong.Action;
@@ -22,15 +23,13 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     public static final float ADJUST_COEFF = 4f;
     public static final float TURNING_COEFF = 10f;
 
-    private Car car;
-
-    public SimpleHandlingStrategy(Car car){
-        this.car = car;
+    public SimpleHandlingStrategy(){
     }
 
     public Action getAction(PerceptionResponse perceptionResponse, CarState state){
         //float turningAngle = adjustPosture(state.angle, state.shift);
         float turningAngle = state.getAngle();
+        Vector2 velo = state.getVelocity();
         CarState.State st = state.getState();
         if(st == CarState.State.REACH_DEST){
             return new Action(false, true, 0);
@@ -60,7 +59,7 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
                 if(perceptionResponse.information.get("state") != Color.GREEN){
                     return new Action(false, true, turn);
                 } else {
-                    if(this.car.getVelocity().len() > TURNING_SPEED){
+                    if(velo.len() > TURNING_SPEED){
                         return new Action(false, true, turn);
                     } else{
                         return new Action(true, false, turn);
@@ -71,17 +70,17 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
 
             }
         } else if(st == CarState.State.LEFT){
-            if(this.car.getVelocity().len() > TURNING_SPEED){
+            if(velo.len() > TURNING_SPEED){
                 return new Action(false, true, LEFT_TURN);
-            } else if(this.car.getVelocity().len() < TURNING_SPEED){
+            } else if(velo.len() < TURNING_SPEED){
                 return new Action(true, false, LEFT_TURN);
             } else {
                 return new Action(false, false, LEFT_TURN);
             }
         } else {
-            if(this.car.getVelocity().len() > TURNING_SPEED){
+            if(velo.len() > TURNING_SPEED){
                 return new Action(false, true, -RIGHT_TURN);
-            } else if(this.car.getVelocity().len() < TURNING_SPEED){
+            } else if(velo.len() < TURNING_SPEED){
                 return new Action(true, false, -RIGHT_TURN);
             } else {
                 return new Action(false, false, -RIGHT_TURN);

@@ -71,13 +71,6 @@ public class Car extends WorldObject implements ISteppable {
 		return this.velocity;
 	}
 
-	public Vector2 getDirection(){
-		double r = this.rotation * Math.PI/HALF_DEGREES;
-		double x = Math.cos(r);
-		double y = Math.sin(r);
-		return new Vector2((float)x, (float)y);
-	}
-
 	private void resetInput(){
 		this.braking = false;
 		this.accelerating = false;
@@ -222,6 +215,6 @@ public class Car extends WorldObject implements ISteppable {
 
 
 	public String toString(){
-		return "Car x = " + this.getPosition().getX() + "y=" + this.getPosition().getY()+ "rotation"+this.adjustrotation() + "direction =" + this.getDirection().epsilonEquals(0,0,0.3f);
+		return "Car x = " + this.getPosition().getX() + "y=" + this.getPosition().getY()+ "rotation"+this.adjustrotation();
 	}
 }

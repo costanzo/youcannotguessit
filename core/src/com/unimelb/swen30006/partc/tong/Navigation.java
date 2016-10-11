@@ -67,8 +67,8 @@ public class Navigation {
         }
 
         Vector2 rotatedCarDir = null;
-        float x = this.car.getDirection().x;
-        float y = this.car.getDirection().y;
+        float x = this.state.getDirection().x;
+        float y = this.state.getDirection().y;
         double shift = 0;
         if(this.currentRoad.getStartPos().getX() == this.currentRoad.getEndPos().getX()) {
             //vertical road
@@ -119,11 +119,15 @@ public class Navigation {
         this.state.setState(CarState.State.STRAIGHT);
     }
 
-    public boolean reachDest(){
+    private boolean reachDest(){
         if(this.dest.distance(car.getPosition()) < DEST_DISTANCE){
             return true;
         }
         return false;
+    }
+
+    public boolean readyToGo(){
+        return this.route != null;
     }
 
 //    based on the current road and next road, get the new state.

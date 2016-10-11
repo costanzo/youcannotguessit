@@ -21,24 +21,24 @@ public class Planner implements IPlanning {
     private CarState state;
     private Navigation gps;
 
-    private Route route;
     private Point2D.Double destination;
     private PriorityStrategy priorityStrategy;
     private HandlingStrategy handlingStrategy;
 
     public Planner(Car car, Point2D.Double dest, Map map){
         this.car = car;
-        this.routePlanner = new SimpleRoutePlanner(dest, map);
-        this.priorityStrategy = new SimplePriorityStrategy(car);
-        this.handlingStrategy = new SimpleHandlingStrategy(car);
+        this.destination = dest;
+        this.routePlanner = new SimpleRoutePlanner(map);
+        this.priorityStrategy = new SimplePriorityStrategy();
+        this.handlingStrategy = new SimpleHandlingStrategy();
         this.state = new CarState(CarState.State.STRAIGHT, 0, 0);
-        this.gps = new Navigation(car, map, this.state, dest);
+        this.gps = new Navigation(car, this.state, dest);
     }
 
     public boolean planRoute(Point2D.Double destination){
-        this.route = routePlanner.getRoute(car.getPosition());
-        gps.setRoute(this.route);
-        if(this.route == null){
+        Route route = routePlanner.getRoute(car.getPosition(), destination);
+        gps.setRoute(route);
+        if(route == null){
             return false;
         } else {
             return true;
@@ -46,7 +46,7 @@ public class Planner implements IPlanning {
     }
 
     public void update(PerceptionResponse[] results, int visibility, float delta){
-        if(this.route == null) {
+        if(!gps.readyToGo()) {
             planRoute(this.destination);
         } else {
             gps.setState();

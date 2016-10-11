@@ -70,6 +70,13 @@ public class CarState {
         return velocity;
     }
 
+    public Vector2 getDirection(){
+        double r = this.rotation * Math.PI/180f;
+        double x = Math.cos(r);
+        double y = Math.sin(r);
+        return new Vector2((float)x, (float)y);
+    }
+
     public void setRotation(float rotation) {
         this.rotation = rotation;
     }
