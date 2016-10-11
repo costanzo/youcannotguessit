@@ -70,26 +70,6 @@ public class Map {
         return null;
     }
 
-    public Intersection.Direction findTurningDirection(Road exit, Road nextEntry){
-        Intersection intersection = findRoadsInteraction(exit, nextEntry);
-
-        Intersection.Direction[] dirs = Intersection.Direction.values();
-        for(Intersection.Direction d : dirs){
-            Road r = intersection.roads.get(d);
-            if(r.equals(nextEntry)){
-                if(d == Intersection.Direction.East){
-                    return Intersection.Direction.West;
-                } else if(d == Intersection.Direction.West){
-                    return Intersection.Direction.East;
-                } else{
-                    return d;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public Intersection[] getRoadIntersections(Road road){
         ArrayList<Intersection> is = new ArrayList<Intersection>(2);
         for(Intersection i : intersections){

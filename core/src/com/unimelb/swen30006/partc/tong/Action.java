@@ -11,13 +11,6 @@ public class Action {
     public final boolean accelerate;
     public final boolean brake;
 
-//    private final static float ROTATION_RATE = 150f;
-//    Navigation.CarState state;
-//    Car car;
-//    float goal_angle;
-//    KeyboardController keyboard;
-//    Navigation navigation;
-
     public Action(boolean accelerate, boolean brake, float angle) {
         this.angle = angle;
         this.accelerate = accelerate;
@@ -48,20 +41,5 @@ public class Action {
 
         return out;
     }
-
-//
-//    public void rotate (Car car, float delta, float goal_angle){
-//        float current_rotation = car.getRotation();
-//        float difference = current_rotation-goal_angle;
-//
-//        if(difference>ROTATION_RATE*delta){
-//            car.turn(ROTATION_RATE*delta);
-//        }else if (difference<ROTATION_RATE*delta){
-//            car.turn(-ROTATION_RATE*delta);
-//        }else{
-//            car.turn(difference);
-//        }
-//
-//    }
 
 }

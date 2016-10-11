@@ -93,4 +93,25 @@ public class Route {
         }
         return out;
     }
+
+    public Intersection.Direction getTurnDirection(Road exit, Road nextEntry){
+        Intersection inte = nextIntersection(exit);
+
+        Intersection.Direction[] dirs = Intersection.Direction.values();
+        for(Intersection.Direction d : dirs){
+            Road r = inte.roads.get(d);
+            if(r.equals(nextEntry)){
+                if(d == Intersection.Direction.East){
+                    return Intersection.Direction.West;
+                } else if(d == Intersection.Direction.West){
+                    return Intersection.Direction.East;
+                } else{
+                    return d;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

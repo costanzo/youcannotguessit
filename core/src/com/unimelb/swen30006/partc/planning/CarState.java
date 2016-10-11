@@ -1,5 +1,9 @@
 package com.unimelb.swen30006.partc.planning;
 
+import com.badlogic.gdx.math.Vector2;
+
+import java.awt.geom.Point2D;
+
 /**
  * Created by Sean on 10/6/2016.
  */
@@ -14,6 +18,9 @@ public class CarState {
     private State state;
     private float angle;
     private float shift;
+    private float rotation;
+    private Point2D.Double pos;
+    private Vector2 velocity;
 
     /*
     state: The state of the should be
@@ -49,6 +56,30 @@ public class CarState {
 
     public void setShift(float shift) {
         this.shift = shift;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public Point2D.Double getPos() {
+        return pos;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public void setPos(Point2D.Double pos) {
+        this.pos = pos;
+    }
+
+    public void setVelocity(Vector2 velocity) {
+        this.velocity = velocity;
     }
 
     public String toString(){

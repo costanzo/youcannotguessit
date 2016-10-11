@@ -23,28 +23,27 @@ public class Navigation {
     private CarState state;
     private Car car;
     private Route route;
-    private Map map;
     private Road nextRoad;
     private float rotation_goal;
     private Point2D.Double dest;
 
 
-
-    public Navigation(Car car, Map map, CarState state, Point2D.Double dest){
+    public Navigation(Car car, CarState state, Point2D.Double dest){
         this.car = car;
         this.state = state;
-        this.map = map;
         this.route = null;
         this.dest = dest;
-        this.currentRoad = map.findRoad(car.getPosition());
     }
 
     public void setRoute(Route route){
         this.route = route;
     }
 
-
     public void setState(){
+        this.state.setPos(this.car.getPosition());
+        this.state.setRotation(this.car.getRotation());
+        this.state.setVelocity(this.car.getVelocity());
+
         if(currentRoad!=null){
             previousRoad = currentRoad;
         }
@@ -127,10 +126,9 @@ public class Navigation {
         return false;
     }
 
-
 //    based on the current road and next road, get the new state.
     private void setNextState(){
-        Intersection.Direction next_road_direction = map.findTurningDirection(previousRoad,nextRoad);
+        Intersection.Direction next_road_direction = route.getTurnDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
         state.setShift(get_shift(nextRoad));
 
@@ -213,15 +211,6 @@ public class Navigation {
             }else{
                 return ((float)this.car.getPosition().getX()-midpoint);
             }
-        }
-    }
-    //calculate the angle difference between the angle the car towards and the angle of it should be
-    private float getAngleDifference(Road road){
-        float adjustRotation = car.adjustrotation();
-        if(road.getStartPos().getX()==road.getEndPos().getX()){
-            return (90-adjustRotation);
-        }else{
-            return adjustRotation;
         }
     }
 
