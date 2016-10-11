@@ -3,20 +3,17 @@ package com.unimelb.swen30006.partc.core;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.unimelb.swen30006.partc.controllers.AIController;
 import com.unimelb.swen30006.partc.controllers.Controller;
 import com.unimelb.swen30006.partc.controllers.KeyboardController;
 import com.unimelb.swen30006.partc.core.infrastructure.Light;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.core.objects.WorldObject;
-import com.unimelb.swen30006.partc.perception.PerceptionForTesting;
-import com.unimelb.swen30006.partc.planning.Map;
-import com.unimelb.swen30006.partc.planning.Planner;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
 import com.varunpant.quadtree.Point;
@@ -26,7 +23,7 @@ public class World implements ISteppable {
 
 	// The visibility of objects within the world
 	public  static int VISIBILITY_RADIUS = 100;
-	
+
 	// The visibility of objects within the world in the daylight
 	public  static int DAY_VISIBILITY = 100;
 	// The visibility of objects within the world at night
@@ -47,7 +44,7 @@ public class World implements ISteppable {
 	private static final float DAY_CYCLE = 2*MIDDAY;
 	// Whether or not to enable debug control
 	private static final boolean DEBUG_ENABLED = true;
-	
+
 
 
 	// Data structures for storing roads, objects etc
@@ -55,18 +52,18 @@ public class World implements ISteppable {
 	public Road[] roads;
 	public WorldObject[] staticObjects;
 	public ISteppable[] steppableObjects;
-	public float worldTime;	
-	
+	public float worldTime;
+
 	// Private variables for convenience and tracking
 	private Intersection[] intersections;
 	private WorldObject[] objects;
 	private QuadTree worldObjectTree;
-	private Car[] cars;	
+	private Car[] cars;
 	private Light[] lights;
 	private ArrayList<Rectangle2D.Double> collisions;
 
 	/**
-	 * Instantiate a world object, making use of a hard coded test object 
+	 * Instantiate a world object, making use of a hard coded test object
 	 * to create the map and retrieve the world objects and roads
 	 */
 	public World() {
@@ -86,13 +83,14 @@ public class World implements ISteppable {
 
 		// Controllers and cars
 		this.controllers = new Controller[1];
-		this.cars = new Car[1];
+		this.cars = new Car[2];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
+		this.controllers[0] = new KeyboardController(cars[0]);
+//		this.controllers[0] = new AIController(cars[0], null, new PerceptionForTesting(this));
 
-		Planner planner = new Planner(cars[0], new Point2D.Double(340, 270), new Map(roads, intersections));
-		this.controllers[0] = new AIController(cars[0], planner, new PerceptionForTesting(this));
-//		this.controllers[0] = new KeyboardController(cars[0], planner, new PerceptionForTesting(this));
-//		 Remaning variables
+		//add a new parking car as an obstacle
+		this.cars[1] = new Car(new Point2D.Double(120,145), 6, 10, Color.BLACK, 25f, 50f, 6f );
+		// Remaning variables
 		this.worldTime = MIDDAY;
 		this.collisions = new ArrayList<Rectangle2D.Double>();
 	}
@@ -125,12 +123,21 @@ public class World implements ISteppable {
 		Point[] points = worldObjectTree.searchIntersect(xmin, ymin, xmax, ymax);
 
 		// Create an array of WorldObjects to return
-		WorldObject[] objects = new WorldObject[points.length];
-		for(int i=0; i<objects.length; i++){
-			Point p = points[i];
-			objects[i] = (WorldObject) p.getValue();
+		List<WorldObject> objects = new ArrayList<WorldObject>();
+		for(Point p:points){
+			objects.add((WorldObject) p.getValue());
 		}
-		return objects;
+		for(Car car:cars){
+			if (car.getPosition()!=pos
+					&&car.getPosition().getX() >= xmin
+					&&car.getPosition().getX() <= xmax
+					&&car.getPosition().getY() >= ymin
+					&&car.getPosition().getY() <= ymax){
+				objects.add(car);
+			}
+		}
+
+		return objects.toArray(new WorldObject[objects.size()]);
 	}
 
 	/**
@@ -168,9 +175,9 @@ public class World implements ISteppable {
 		}
 		return visibleRoads.toArray(new Road[visibleRoads.size()]);
 	}
-	
+
 	/**
-	 * Find the intersection that exists at a point, for cases where we are not 
+	 * Find the intersection that exists at a point, for cases where we are not
 	 * on a road but need to navigate through the road structure
 	 * @param pos the point we are searching from
 	 * @return the intersection present at pos, or null if none is present
@@ -219,7 +226,7 @@ public class World implements ISteppable {
 			c.update(delta);
 		}
 
-		// Update all dynamic objects 
+		// Update all dynamic objects
 		for(ISteppable s: steppableObjects){
 			s.update(delta);
 		}
@@ -233,7 +240,7 @@ public class World implements ISteppable {
 		for(Car c: this.cars){
 			WorldObject[] objects = this.objectsAtPoint(c.getPosition());
 			for(WorldObject o: objects){
-				if(c.collidesWith(o)){
+				if(c.collidesWith(o) && c!=o){
 					this.collisions.add(o.boundary);
 					this.collisions.add(c.boundary);
 				}
@@ -275,8 +282,8 @@ public class World implements ISteppable {
 		}
 		this.collisions.clear();
 	}
-	
-	/** 
+
+	/**
 	 * Find the point that the camera should focus on if it is in tracking mode
 	 * @return the point of interest
 	 */
@@ -309,7 +316,7 @@ public class World implements ISteppable {
 				System.out.println("Road: " + r + " at distance " + r.minDistanceTo(cars[0].getPosition()));
 			}
 		}
-		
+
 		if(Gdx.input.isKeyPressed(Keys.O)){
 			WorldObject[] objs = objectsAtPoint(cars[0].getPosition());
 			System.out.println("Found " + objs.length + " objects within " + VISIBILITY_RADIUS + " of " + cars[0].getPosition() + ":");
@@ -354,7 +361,7 @@ public class World implements ISteppable {
 
 	/**
 	 * Separate out all of the various World Object elements into their respective data structures
-	 * for reference and manipulation independently of eachother. Only stores references, does not 
+	 * for reference and manipulation independently of eachother. Only stores references, does not
 	 * manipulate the core data structure
 	 */
 	private void separateObjects (){
@@ -390,6 +397,6 @@ public class World implements ISteppable {
 			this.worldObjectTree.set(o.getPosition().x, o.getPosition().y, o);
 		}
 
-	}	
+	}
 
 }
