@@ -220,7 +220,7 @@ public class Navigation {
         }
     }
 
-    private float eta(){
+    public float eta(){
         float distance = totalDistance();
 
         return distance/AVERG_SPEED;

@@ -26,9 +26,7 @@ public class Route {
 
     }
 
-    public Intersection[] getIntersections(){
-        return intersections;
-    }
+
 
     public Road nextRoad(Road currentRoad){
         int i = getRoadIndex(currentRoad);

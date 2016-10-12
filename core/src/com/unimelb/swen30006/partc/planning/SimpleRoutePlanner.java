@@ -93,9 +93,4 @@ public class SimpleRoutePlanner implements RoutePlanner {
         return closest;
     }
 
-    private float roadDistance(Road r1, Road r2){
-        float d1 = r2.minDistanceTo(r1.getStartPos());
-        float d2 = r2.minDistanceTo(r1.getEndPos());
-        return Math.min(d1, d2);
-    }
 }

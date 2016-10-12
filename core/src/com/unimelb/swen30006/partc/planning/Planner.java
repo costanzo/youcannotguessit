@@ -60,6 +60,6 @@ public class Planner implements IPlanning {
     }
 
     public float eta(){
-        return 0;
+        return gps.eta();
     }
 }
