@@ -47,7 +47,6 @@ public class Planner implements IPlanning {
             planRoute(this.destination);
         } else {
             gps.setState();
-            //System.out.println(this.car.getVelocity().len());
             PerceptionResponse pr = this.priorityStrategy.getHighestPriority(results, this.state);
             Action action = this.handlingStrategy.getAction(pr, this.state);
             action.takeAction(this.car);
