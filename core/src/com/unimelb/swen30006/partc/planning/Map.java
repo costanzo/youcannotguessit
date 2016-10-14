@@ -28,47 +28,6 @@ public class Map {
         return null;
     }
 
-    public Intersection findIntersection(Point2D.Double pos){
-        for(Intersection i : intersections){
-            if ( i.containsPoint(pos)){
-                return i;
-            }
-        }
-
-        return null;
-    }
-
-    public Intersection findRoadsInteraction(Road road1, Road road2){
-        Point2D.Double road1Start = road1.getStartPos();
-        Point2D.Double road1End   = road1.getEndPos();
-        Point2D.Double road2Start = road2.getStartPos();
-        Point2D.Double road2End   = road2.getEndPos();
-
-        Point2D.Double i1;
-        Point2D.Double i2;
-
-        if(road1Start.distance(road2Start) < 50f){
-            i1 = road1Start;
-            i2 = road2Start;
-        } else if(road1Start.distance(road1End) < 50f){
-            i1 = road1Start;
-            i2 = road2End;
-        } else if(road1End.distance(road2Start) < 50f){
-            i1 = road1End;
-            i2 = road2Start;
-        } else {
-            i1 = road1End;
-            i2 = road2End;
-        }
-
-        for(Intersection intersection : intersections){
-            if(i1.distance(intersection.pos)<40f){
-                return intersection;
-            }
-        }
-
-        return null;
-    }
 
     public Intersection[] getRoadIntersections(Road road){
         ArrayList<Intersection> is = new ArrayList<Intersection>(2);
