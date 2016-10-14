@@ -14,7 +14,6 @@ public class Route {
     private Road[] roads;
     private Intersection[] intersections;
 
-
     public Route(Road[] roads, Intersection[] intersections){
         this.roads = roads;
         this.intersections = intersections;
@@ -24,10 +23,6 @@ public class Route {
     public Road[] getRoads() {
         return roads;
 
-    }
-
-    public Intersection[] getIntersections(){
-        return intersections;
     }
 
     public Road nextRoad(Road currentRoad){
@@ -41,6 +36,25 @@ public class Route {
             // cannot find a road
             return null;
         }
+    }
+
+    public boolean isLastIntersection(Intersection intersection){
+        return intersection.equals(intersections[intersections.length-1]);
+    }
+
+    public boolean isLastRoad(Road road){
+        return road.equals(roads[roads.length-1]);
+    }
+
+    public float getIntersectionDist(Intersection intersection, Point2D.Double dest){
+        double dist = 0;
+        for (int i = getIntersectionIndex(intersection); i < intersections.length - 1; i++) {
+            dist += intersections[i].pos.distance(intersections[i+1].pos);
+        }
+
+        dist += intersections[intersections.length-1].pos.distance(dest);
+
+        return (float)dist;
     }
 
     public Intersection nextIntersection(Road currentRoad){
@@ -64,14 +78,6 @@ public class Route {
             }
         }
         return -1;
-    }
-
-    public int getIntersectionLength(){
-        return  intersections.length;
-    }
-
-    public Intersection getIntersectionByIndex(int i){
-        return intersections[i];
     }
 
     private int getRoadIndex(Road road){

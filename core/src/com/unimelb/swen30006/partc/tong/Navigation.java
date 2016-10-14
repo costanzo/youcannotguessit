@@ -16,7 +16,7 @@ import java.awt.geom.Point2D;
 
 
 public class Navigation {
-    public static float DEST_DISTANCE = 30f;
+    public static float DEST_DISTANCE = 20f;
     public static float AVERG_SPEED = 10f;
 
     private Road previousRoad;
@@ -118,7 +118,10 @@ public class Navigation {
 
         this.state.setAngle((float)angle);
         this.state.setShift((float)shift);
-        this.state.setState(CarState.State.STRAIGHT);
+        if(route.isLastRoad(this.currentRoad))
+            this.state.setState(CarState.State.ARRIVING);
+        else
+            this.state.setState(CarState.State.STRAIGHT);
     }
 
     private boolean reachDest(){
@@ -220,38 +223,28 @@ public class Navigation {
         }
     }
 
-    private float eta(){
-        float distance = totalDistance();
-
-        return distance/AVERG_SPEED;
-    }
-    private float totalDistance(){
-        if(!reachDest()) {
-            float distance = 0;
+    public float eta(){
+        float distance;
+        if(reachDest()) {
+            distance = 0;
+        }else{
             Intersection intersection;
             if (currentRoad != null) {
                 intersection = route.nextIntersection(currentRoad);
             } else {
                 intersection = route.nextIntersection(previousRoad);
             }
-            if(route.getIntersectionIndex(intersection)==route.getIntersectionLength()-1){
-                distance =(float) (Math.abs (state.getPos().getX()- dest.getX())+Math.abs(state.getPos().getY()-dest.getY()));
-                return distance;
-            }
 
-            distance += this.car.getPosition().distance(intersection.pos);
-            for (int i = route.getIntersectionIndex(intersection); i < route.getIntersectionLength() - 1; i++) {
-                if (route.getIntersectionByIndex(i).pos.getX() == route.getIntersectionByIndex(i + 1).pos.getX()) {
-                    distance += Math.abs(route.getIntersectionByIndex(i).pos.getY() - route.getIntersectionByIndex(i + 1).pos.getY());
-                } else {
-                    distance += Math.abs(route.getIntersectionByIndex(i).pos.getX() - route.getIntersectionByIndex(i + 1).pos.getX());
-                }
+            Point2D.Double pos = this.car.getPosition ();
+            if(route.isLastIntersection(intersection)){
+                distance = (float)pos.distance(dest);
+            } else{
+                distance = (float)pos.distance(intersection.pos);
+                distance += route.getIntersectionDist(intersection, this.dest);
             }
-            distance += dest.distance(route.getIntersectionByIndex(route.getIntersectionLength() - 1).pos);
-            return distance;
-        }else{
-            return 0;
         }
+
+        return distance/AVERG_SPEED;
     }
 
 }

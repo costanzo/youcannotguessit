@@ -21,19 +21,16 @@ public class SimpleRoutePlanner implements RoutePlanner {
         this.destination = dest;
         Road currentRoad = map.findRoad(departurePosition);
         Road destinationRoad = map.findRoad(this.destination);
-        if(destinationRoad == null){
-            return null;
+        Route route = null;
+        if(destinationRoad != null){
+            route = calculateBestRoute(currentRoad, destinationRoad);
         }
-
-        Route route = calculateBestRoute(currentRoad, destinationRoad);
         return route;
     }
 
     private Route calculateBestRoute(Road start, Road end){
         ArrayList<Road> rs = new ArrayList<Road>();
         ArrayList<Intersection> is = new ArrayList<Intersection>();
-
-
         Road road = start;
         Intersection intersection;
         while(!road.equals(end)){
@@ -75,15 +72,14 @@ public class SimpleRoutePlanner implements RoutePlanner {
             rs.add(r);
         }
 
-        return closestRoad(rs, dest);
+        return closestRoad(rs);
 
     }
 
-    private Road closestRoad(ArrayList<Road> rs, Road dest){
+    private Road closestRoad(ArrayList<Road> rs){
         Road closest = null;
         float minDist = Integer.MAX_VALUE;
         for(Road r : rs){
-            //float dist = roadDistance(r, dest);
             float dist = r.minDistanceTo(this.destination);
             if(dist < minDist){
                 closest = r;
@@ -91,11 +87,5 @@ public class SimpleRoutePlanner implements RoutePlanner {
             }
         }
         return closest;
-    }
-
-    private float roadDistance(Road r1, Road r2){
-        float d1 = r2.minDistanceTo(r1.getStartPos());
-        float d2 = r2.minDistanceTo(r1.getEndPos());
-        return Math.min(d1, d2);
     }
 }

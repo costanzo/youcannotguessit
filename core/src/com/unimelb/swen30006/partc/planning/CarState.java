@@ -12,6 +12,7 @@ public class CarState {
         LEFT,
         RIGHT,
         STRAIGHT,
+        ARRIVING,
         REACH_DEST
     }
 

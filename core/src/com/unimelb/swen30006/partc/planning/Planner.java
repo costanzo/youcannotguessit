@@ -1,5 +1,6 @@
 package com.unimelb.swen30006.partc.planning;
 
+import com.badlogic.gdx.graphics.Color;
 import com.unimelb.swen30006.partc.ai.interfaces.IPlanning;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
@@ -38,11 +39,7 @@ public class Planner implements IPlanning {
     public boolean planRoute(Point2D.Double destination){
         Route route = routePlanner.getRoute(car.getPosition(), destination);
         gps.setRoute(route);
-        if(route == null){
-            return false;
-        } else {
-            return true;
-        }
+        return route != null;
     }
 
     public void update(PerceptionResponse[] results, int visibility, float delta){
@@ -52,7 +49,9 @@ public class Planner implements IPlanning {
             gps.setState();
             //System.out.println(this.car.getVelocity().len());
             PerceptionResponse pr = this.priorityStrategy.getHighesPriority(results, this.state);
-            //System.out.println(pr);
+            if(this.car.getColour() == Color.CORAL)
+                System.out.println(pr);
+            //System.out.println(state);
             Action action = this.handlingStrategy.getAction(pr, this.state);
             action.takeAction(this.car);
         }
@@ -60,6 +59,6 @@ public class Planner implements IPlanning {
     }
 
     public float eta(){
-        return 0;
+        return this.gps.eta();
     }
 }

@@ -13,9 +13,9 @@ import java.util.ArrayList;
  * Created by Sean on 10/1/2016.
  */
 public class SimplePriorityStrategy implements PriorityStrategy {
-    public static float SAFETY_DISTANCE = 30f;
-    public static float TRAFFIC_REACTION_DISTANCE = 50f;
-    public static float SAFETY_WIDTH = 8f;
+    public static final float SAFETY_DISTANCE = 20f;
+    public static final float TRAFFIC_REACTION_DISTANCE = 50f;
+    public static final float SAFETY_WIDTH = 6f;
 
     private PerceptionResponse[] perceptionResponses;
 
@@ -26,19 +26,11 @@ public class SimplePriorityStrategy implements PriorityStrategy {
     public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, CarState state){
         this.perceptionResponses = perceptionResponses;
 
-        CarState.State st = state.getState();
-        if(st == CarState.State.STRAIGHT){
-            return goStraight(state);
-        } else if(st == CarState.State.LEFT){
-            return goStraight(state);
-        } else{
-            return goStraight(state);
-        }
-    }
+        Vector2 carDir = state.getDirection();
+        Point2D.Double carPos = state.getPos();
 
-    private PerceptionResponse goStraight(CarState state){
-        PerceptionResponse obstacleAhead = getObstacleAhead(state.getDirection());
-        PerceptionResponse trafficLight  = trafficLight(state.getDirection());
+        PerceptionResponse obstacleAhead = getObstacleAhead(carDir);
+        PerceptionResponse trafficLight  = trafficLight(carDir, carPos);
 
         if(obstacleAhead != null && obstacleAhead.objectType != PerceptionResponse.Classification.TrafficLight){
             return obstacleAhead;
@@ -47,6 +39,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         }
     }
 
+    //find the closest obstacles ahead that the car might hit including the traffic lights
     private PerceptionResponse getObstacleAhead(Vector2 carDirection){
         ArrayList<PerceptionResponse> prs = new ArrayList<PerceptionResponse>();
         for(PerceptionResponse pr : this.perceptionResponses){
@@ -69,26 +62,28 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         return closest;
     }
 
-    private PerceptionResponse trafficLight(Vector2 carDir){
-        ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>(4);
+    private PerceptionResponse trafficLight(Vector2 carDir, Point2D.Double carPos){
+        ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>();
+        //find the traffic lights ahead
         for(PerceptionResponse pr : perceptionResponses){
             if(pr.objectType == PerceptionResponse.Classification.TrafficLight){
-                if(carDir.dot(pr.direction) > 0){
+                //the traffic lights must be in front of the car
+                if(carDir.dot(pr.direction) > 0 && carPos.distance(pr.position) < TRAFFIC_REACTION_DISTANCE){
                     trafficLights.add(pr);
                 }
             }
         }
 
+        //the car must can see the four lights
         if( trafficLights.size() < 4 ) {
             return null;
         }
 
-        PerceptionResponse trafficLight = null;
-        PerceptionResponse pr = findMaxDist(trafficLights);
-        trafficLights.remove(pr);
-        pr = findMaxDist(trafficLights);
-        trafficLight = pr;
+        PerceptionResponse trafficLight = findMaxDist(trafficLights);
+        trafficLights.remove(trafficLight);
+        trafficLight = findMaxDist(trafficLights);
 
+        //if the traffic light is too far, we do not consider it
         if(trafficLight != null &&
                 trafficLight.direction.len() > TRAFFIC_REACTION_DISTANCE){
             trafficLight = null;

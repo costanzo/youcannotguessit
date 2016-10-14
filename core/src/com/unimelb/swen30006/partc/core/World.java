@@ -92,8 +92,8 @@ public class World implements ISteppable {
 		//add a new parking car as an obstacle
 		this.cars[1] = new Car(new Point2D.Double(120,145), 6, 10, Color.BLACK, 25f, 50f, 6f );
 
-		Planner planner = new Planner(cars[0], new Point2D.Double(340, 270), new Map(roads, intersections));
-		Planner planner2 = new Planner(cars[1], new Point2D.Double(310, 350), new Map(roads, intersections));
+		Planner planner = new Planner(cars[0], new Point2D.Double(350, 270), new Map(roads, intersections));
+		Planner planner2 = new Planner(cars[1], new Point2D.Double(380, 500), new Map(roads, intersections));
 
 
 //		this.controllers[1] = new KeyboardController(cars[1]);
