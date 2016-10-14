@@ -36,19 +36,27 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
         float speed = velo.len();
         float sh = state.getShift();
 
-        if(st == CarState.State.REACH_DEST){
-            return new Action(false, true, 0);
-        } else if(st == CarState.State.ARRIVING) {
-            this.arrivingShift = ARRIVING_SHIFT;
-            return goStraight(turningAngle, perceptionResponse, sh, speed);
-        }else if(st == CarState.State.STRAIGHT ){
-            this.arrivingShift = 0;
-            return goStraight(turningAngle, perceptionResponse, sh, speed);
-        } else if(st == CarState.State.LEFT){
-            return turning(speed, LEFT_TURN);
-        } else {
-            return turning(speed, RIGHT_TURN);
+        Action action;
+        switch (st){
+            case REACH_DEST:
+                action = new Action(false, true, 0);
+                break;
+            case ARRIVING:
+                this.arrivingShift = ARRIVING_SHIFT;
+                action = goStraight(turningAngle, perceptionResponse, sh, speed);
+                break;
+            case STRAIGHT:
+                this.arrivingShift = 0;
+                action = goStraight(turningAngle, perceptionResponse, sh, speed);
+                break;
+            case LEFT:
+                action = turning(speed, LEFT_TURN);
+                break;
+            default:
+                action = turning(speed, RIGHT_TURN);
+                break;
         }
+        return action;
     }
 
     private Action turning(float speed, float turnSpeed){

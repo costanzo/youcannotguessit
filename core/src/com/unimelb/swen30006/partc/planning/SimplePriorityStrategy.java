@@ -23,7 +23,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         this.perceptionResponses = null;
     }
 
-    public PerceptionResponse getHighesPriority(PerceptionResponse[] perceptionResponses, CarState state){
+    public PerceptionResponse getHighestPriority(PerceptionResponse[] perceptionResponses, CarState state){
         this.perceptionResponses = perceptionResponses;
 
         Vector2 carDir = state.getDirection();
