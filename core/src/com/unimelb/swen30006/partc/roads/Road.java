@@ -32,7 +32,6 @@ public class Road {
 	private final int[] lanes;
 	private final RoadMarking[] markers;
 	private Rectangle2D shape;
-	private HashMap<String,Intersection.Direction> road_direction = new HashMap<String, Intersection.Direction>();
 
 	public Road(Point2D.Double startPos, Point2D.Double endPos, float width, int numLanes, int[] laneMask) {
 		this.startPos = startPos;
@@ -190,20 +189,6 @@ public class Road {
 		return false;
 	}
 
-	public HashMap<String,Intersection.Direction> getRoad_direction(){
-		return this.road_direction;
-	}
 
-	public Intersection.Direction reverse_direction(Intersection.Direction input_direction){
-		if(input_direction== Intersection.Direction.North){
-			return Intersection.Direction.South;
-		}else if(input_direction== Intersection.Direction.South){
-			return Intersection.Direction.North;
-		}else if(input_direction== Intersection.Direction.West){
-			return Intersection.Direction.East;
-		}else{
-			return Intersection.Direction.West;
-		}
-	}
 
 }
