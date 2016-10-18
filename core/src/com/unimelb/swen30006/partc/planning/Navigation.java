@@ -39,7 +39,6 @@ public class Navigation {
     }
 
     /**
-     *
      * @param route: the planned route to the destination
      */
     public void setRoute(Route route){
@@ -68,7 +67,7 @@ public class Navigation {
 
     }
 
-    //The car is currently on the road
+    //The car is currently on the road, caulculate the next step of the car
     private void setStateOnRoad(){
         if(reachDest()){
             this.state.setState(CarState.State.REACH_DEST);
@@ -131,12 +130,22 @@ public class Navigation {
             this.state.setState(CarState.State.STRAIGHT);
     }
 
+    /**
+     * check whether the car has arrived the destination
+     *
+     * @return: if the distance between car's position and the destination is
+     * less than DEST_DISTANCE, return true, else return false
+     */
     private boolean reachDest(){
         if(this.dest.distance(car.getPosition()) < DEST_DISTANCE){
             return true;
         }
         return false;
     }
+
+    /**
+     * check whether the valid route has been passed in
+     */
 
     public boolean readyToGo(){
         return this.route != null;
@@ -211,6 +220,10 @@ public class Navigation {
         }
     }
 
+    /**
+     *
+     * @return how far the car away from the middle of the road
+     */
     private float get_shift(Road currentRoad){
         if(currentRoad.getEndPos().getY()==currentRoad.getStartPos().getY()){
             float midpoint = (float)currentRoad.getStartPos().getY();
@@ -230,6 +243,10 @@ public class Navigation {
         }
     }
 
+    /**
+     * estimate the arriving time
+     * @return
+     */
     public float eta(){
         float distance;
         if(reachDest()) {
