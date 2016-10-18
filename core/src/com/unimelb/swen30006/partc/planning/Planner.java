@@ -4,10 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.unimelb.swen30006.partc.ai.interfaces.IPlanning;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.objects.Car;
-import com.unimelb.swen30006.partc.core.objects.WorldObject;
-import com.unimelb.swen30006.partc.roads.Road;
-import com.unimelb.swen30006.partc.tong.Action;
-import com.unimelb.swen30006.partc.tong.Navigation;
 
 import java.awt.geom.Point2D;
 

@@ -1,10 +1,7 @@
 package com.unimelb.swen30006.partc.planning;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
-import com.unimelb.swen30006.partc.core.objects.Car;
-import com.unimelb.swen30006.partc.tong.Navigation;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
