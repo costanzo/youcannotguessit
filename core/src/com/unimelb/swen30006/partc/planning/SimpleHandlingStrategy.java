@@ -79,16 +79,15 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
             turn = -TURNING_RATE;
 
         if(perceptionResponse == null){
-            if(sh < 0 || Math.abs(turningAngle) > ADJUST_TURNING_THRES  ) {
+            if(sh < 0 || Math.abs(turningAngle) > ADJUST_TURNING_THRES ) {
+                //the car is in the intersection or the angle of the car is very big that may cause instability
                 return new Action(true, false, turn * Math.abs(turningAngle)/TURNING_COEFF);
             } else{
-                if(sh > LANE_MARGIN){
-                    return new Action(true, false, -TURNING_RATE * (sh-LANE_MARGIN + this.arrivingShift) * ADJUST_COEFF * (Car.MAX_VELOCITY - speed)/10);
-                } else if (sh < LANE_MARGIN){
-                    return new Action(true, false, TURNING_RATE * (LANE_MARGIN-sh + this.arrivingShift) * ADJUST_COEFF * (Car.MAX_VELOCITY - speed)/10);
-                } else {
-                    return new Action(true, false, 0);
+                if(speed < 15f){
+                    return new Action(true, false, turn * 3);
                 }
+                //the car is almost stable and can adjust now
+                return new Action(true, false, TURNING_RATE * (LANE_MARGIN-sh + this.arrivingShift) * ADJUST_COEFF * 20/(speed+5));//(Car.MAX_VELOCITY - speed)/10);
             }
         } else if(perceptionResponse.objectType == PerceptionResponse.Classification.TrafficLight){
             if(perceptionResponse.information.get("state") != Color.GREEN){

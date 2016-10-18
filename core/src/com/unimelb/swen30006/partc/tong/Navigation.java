@@ -62,6 +62,7 @@ public class Navigation {
 
     }
 
+    //The car is currently on the road
     private void setStateOnRoad(){
         if(reachDest()){
             this.state.setState(CarState.State.REACH_DEST);
@@ -135,7 +136,7 @@ public class Navigation {
         return this.route != null;
     }
 
-//    based on the current road and next road, get the new state.
+  //The car is currently on the intersection based on the current road and next road, get the new state.
     private void setNextState(){
         Intersection.Direction next_road_direction = route.getTurnDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();

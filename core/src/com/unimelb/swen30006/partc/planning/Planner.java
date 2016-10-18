@@ -48,7 +48,10 @@ public class Planner implements IPlanning {
         } else {
             gps.setState();
             PerceptionResponse pr = this.priorityStrategy.getHighestPriority(results, this.state);
+
             Action action = this.handlingStrategy.getAction(pr, this.state);
+            if(this.car.getColour() == Color.CORAL)
+                System.out.println(this.state + " " + action );
             action.takeAction(this.car);
         }
         this.car.update(delta);

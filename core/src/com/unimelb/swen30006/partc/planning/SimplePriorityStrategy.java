@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class SimplePriorityStrategy implements PriorityStrategy {
     public static final float SAFETY_DISTANCE = 20f;
     public static final float TRAFFIC_REACTION_DISTANCE = 50f;
-    public static final float SAFETY_WIDTH = 6f;
+    public static final float SAFETY_WIDTH = 4f;
 
     private PerceptionResponse[] perceptionResponses;
 

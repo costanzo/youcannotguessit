@@ -59,10 +59,6 @@ public class CarState {
         this.shift = shift;
     }
 
-    public float getRotation() {
-        return rotation;
-    }
-
     public Point2D.Double getPos() {
         return pos;
     }
@@ -91,6 +87,6 @@ public class CarState {
     }
 
     public String toString(){
-        return this.state.toString() + " " + this.angle + " " + this.shift;
+        return this.state.toString() + " " + this.angle + " " + this.shift + " " + this.velocity.len();
     }
 }
