@@ -11,12 +11,20 @@ public class Action {
     public final boolean accelerate;
     public final boolean brake;
 
+    /**
+     *
+     * @param accelerate: a boolean variable determine whether the car need to accelerate
+     * @param brake: a boolean variable determine whether the car need to brake
+     * @param angle: a float variable describe how much degree the car need to turn
+     */
     public Action(boolean accelerate, boolean brake, float angle) {
         this.angle = angle;
         this.accelerate = accelerate;
         this.brake = brake;
     }
-
+    /**
+     * control the car based on the variables passed into the class
+    **/
     public void takeAction(Car car){
         if(this.accelerate){
             car.accelerate();

@@ -14,11 +14,21 @@ public class Map {
     private Road[] roads;
     private Intersection[] intersections;
 
+    /**
+     *
+     * @param roads: all the roads are read from xml
+     * @param intersections: all the intersections are read from xml
+     */
     public Map(Road[] roads, Intersection[] intersections) {
         this.roads = roads;
         this.intersections = intersections;
     }
 
+    /**
+     *
+     * @param pos: the current position in double type
+     * @return: the road that contains the point
+     */
     public Road findRoad(Point2D.Double pos){
         for(Road r : roads){
             if (r.containsPoint(pos)){
@@ -29,6 +39,11 @@ public class Map {
     }
 
 
+    /**
+     *
+     * @param road: an instance of Road
+     * @return: get the intersections connecting to the road
+     */
     public Intersection[] getRoadIntersections(Road road){
         ArrayList<Intersection> is = new ArrayList<Intersection>(2);
         for(Intersection i : intersections){

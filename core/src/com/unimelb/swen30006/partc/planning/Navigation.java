@@ -11,7 +11,9 @@ import com.unimelb.swen30006.partc.roads.Road;
 import java.awt.geom.Point2D;
 
 /**
- * Created by tong on 16-10-1.
+ * It is like a real gps, based on the current location and the plan, gives out the
+ * next step of the car in the form of an instance of Action also based on the average
+ * speed and remaining length of the roads, estimate the arriving time
  */
 
 
@@ -36,6 +38,10 @@ public class Navigation {
         this.dest = dest;
     }
 
+    /**
+     *
+     * @param route: the planned route to the destination
+     */
     public void setRoute(Route route){
         this.route = route;
     }
@@ -59,6 +65,7 @@ public class Navigation {
         }else{
             setStateOnRoad();
         }
+        System.out.println(eta());
 
     }
 

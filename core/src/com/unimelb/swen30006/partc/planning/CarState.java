@@ -23,11 +23,12 @@ public class CarState {
     private Point2D.Double pos;
     private Vector2 velocity;
 
-    /*
-    state: The state of the should be
-    shift: The distance from the center of the road left + right -
-    angle: The angle difference between the road and the car moving angle.
-     */
+    /**
+     *
+     * @param state: an enum variable, the state of the should be
+     * @param shift: The distance from the center of the road left + right -
+     * @param angle: The angle difference between the road and the car moving angle.
+     **/
 
     public CarState(State state, float shift, float angle) {
         this.state = state;
@@ -66,6 +67,10 @@ public class CarState {
     public Vector2 getVelocity() {
         return velocity;
     }
+
+    /**
+     * @return the rotation in form of Vector2
+     */
 
     public Vector2 getDirection(){
         double r = this.rotation * Math.PI/180f;

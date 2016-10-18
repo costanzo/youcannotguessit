@@ -39,6 +39,9 @@ public class Route {
     }
 
     public boolean isLastIntersection(Intersection intersection){
+        if(intersection==null){
+            return true;
+        }
         return intersection.equals(intersections[intersections.length-1]);
     }
 
