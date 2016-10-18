@@ -65,7 +65,6 @@ public class Navigation {
         }else{
             setStateOnRoad();
         }
-        System.out.println(eta());
 
     }
 
