@@ -7,6 +7,7 @@ import com.unimelb.swen30006.partc.planning.Map;
 import com.unimelb.swen30006.partc.planning.Route;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
+import net.dermetfan.gdx.physics.box2d.PositionController;
 
 import java.awt.geom.Point2D;
 
@@ -249,9 +250,10 @@ public class Navigation {
                 distance = (float)pos.distance(intersection.pos);
                 distance += route.getIntersectionDist(intersection, this.dest);
             }
+            distance = distance - DEST_DISTANCE;
         }
 
-        return distance/AVERG_SPEED;
+        return  distance/AVERG_SPEED;
     }
 
 }

@@ -7,11 +7,16 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
- * Created by Sean on 10/1/2016.
+ * This class will prioritise the perception responses based on the car state
  */
 public class SimplePriorityStrategy implements PriorityStrategy {
+    //the distance that the car should keep from other obstacles
     public static final float SAFETY_DISTANCE = 20f;
+
+    //the reaction distance within which the car should take action about the traffic light
     public static final float TRAFFIC_REACTION_DISTANCE = 50f;
+
+    //the distance from the track that the car will go through
     public static final float SAFETY_WIDTH = 4f;
 
     private PerceptionResponse[] perceptionResponses;
@@ -20,18 +25,31 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         this.perceptionResponses = null;
     }
 
+    /**
+     * This method is used to select the highest priority perception response
+     * from the all the perception responses based on car state
+     * @param perceptionResponses
+     * @param state
+     * @return the perception response with the highest priority
+     */
     public PerceptionResponse getHighestPriority(PerceptionResponse[] perceptionResponses, CarState state){
         this.perceptionResponses = perceptionResponses;
 
+        //the running direction of the car
         Vector2 carDir = state.getDirection();
         Point2D.Double carPos = state.getPos();
 
+        //the obstacle in front of the car, including traffic lights
         PerceptionResponse obstacleAhead = getObstacleAhead(carDir);
+
+        //the traffic light ahead that the car should watch out
         PerceptionResponse trafficLight  = trafficLight(carDir, carPos);
 
         if(obstacleAhead != null && obstacleAhead.objectType != PerceptionResponse.Classification.TrafficLight){
+            //the obstacle in front of the car and the obstacle should not be traffic light
             return obstacleAhead;
         } else {
+            //the traffic light to take care of
             return trafficLight;
         }
     }
@@ -42,12 +60,14 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         for(PerceptionResponse pr : this.perceptionResponses){
             float dis = pr.direction.dot(carDirection);
             if((dis > 0) && (Math.sqrt(pr.direction.len2() - dis * dis)-pr.width/2) < SAFETY_WIDTH){
+                //the items in front that the car might collide with
                 prs.add(pr);
             }
         }
 
         PerceptionResponse closest = null;
         double dist = SAFETY_DISTANCE;
+        //find the closest item that the car might collide with
         for(PerceptionResponse pr : prs){
             double prDist = pr.direction.len();
             if(prDist < dist){
@@ -59,6 +79,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         return closest;
     }
 
+    //find the right traffic light that the car should take care of
     private PerceptionResponse trafficLight(Vector2 carDir, Point2D.Double carPos){
         ArrayList<PerceptionResponse> trafficLights = new ArrayList<PerceptionResponse>();
         //find the traffic lights ahead
@@ -76,8 +97,13 @@ public class SimplePriorityStrategy implements PriorityStrategy {
             return null;
         }
 
+        //get the right second traffic light
         PerceptionResponse trafficLight = findMaxDist(trafficLights);
+
+        //remove the right second traffic light
         trafficLights.remove(trafficLight);
+
+        //get the left second traffic light
         trafficLight = findMaxDist(trafficLights);
 
         //if the traffic light is too far, we do not consider it
@@ -88,6 +114,7 @@ public class SimplePriorityStrategy implements PriorityStrategy {
         return trafficLight;
     }
 
+    //find the furthest perception response from the perception response list
     private PerceptionResponse findMaxDist(ArrayList<PerceptionResponse> perceptionResponses){
         PerceptionResponse perceptionResponse = null;
         double maxDist = 0;
