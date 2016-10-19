@@ -8,12 +8,12 @@ import com.unimelb.swen30006.partc.core.objects.Car;
 import java.awt.geom.Point2D;
 
 /**
- * Created by Sean on 9/26/2016.
+ * The Planner class is in charge of planning the route, control the movement of car
+ * and estimate the time left to the destination.
  */
 public class Planner implements IPlanning {
 
     private RoutePlanner routePlanner;
-
     private Car car;
     private CarState state;
     private Navigation gps;
@@ -28,10 +28,18 @@ public class Planner implements IPlanning {
         this.routePlanner = new SimpleRoutePlanner(map);
         this.priorityStrategy = new SimplePriorityStrategy();
         this.handlingStrategy = new SimpleHandlingStrategy();
+
+        //the initial state of the car should be straight
         this.state = new CarState(CarState.State.STRAIGHT, 0, 0);
+
         this.gps = new Navigation(car, this.state, dest);
     }
 
+    /**
+     * This method will plan the route and give the route to the Navigation
+     * @param destination The point we want to reach
+     * @return if the destination can be reached, return true; otherwise return false.
+     */
     public boolean planRoute(Point2D.Double destination){
         Route route = routePlanner.getRoute(car.getPosition(), destination);
         gps.setRoute(route);
@@ -40,20 +48,25 @@ public class Planner implements IPlanning {
 
     public void update(PerceptionResponse[] results, int visibility, float delta){
         if(!gps.readyToGo()) {
+            //the route is not planned, car cannot go
             planRoute(this.destination);
         } else {
+            //update the state of the car via gps
             gps.setState();
             PerceptionResponse pr = this.priorityStrategy.getHighestPriority(results, this.state);
-
             Action action = this.handlingStrategy.getAction(pr, this.state);
-//            if(this.car.getColour() == Color.CORAL)
-//                System.out.println(this.state + " " + action );
+
+            if(this.car.getColour() == Color.CORAL)
+                System.out.println(eta());
+
+            //control the movement of the car
             action.takeAction(this.car);
         }
         this.car.update(delta);
     }
 
     public float eta(){
+        //get eta from gps
         return this.gps.eta();
     }
 }

@@ -7,6 +7,7 @@ import com.unimelb.swen30006.partc.planning.Map;
 import com.unimelb.swen30006.partc.planning.Route;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
+import net.dermetfan.gdx.physics.box2d.PositionController;
 
 import java.awt.geom.Point2D;
 
@@ -50,6 +51,23 @@ public class Navigation {
      */
     public void setRoute(Route route){
         this.route = route;
+        if(this.route != null){
+            Road[] roads = this.route.getRoads();
+            Road lastRoad = roads[roads.length-1];
+            if(!lastRoad.containsPoint(this.dest)) {
+                //the destination is not on the road, we relocate the destination to make it on the road
+                Point2D.Double newDest;
+                if(lastRoad.getStartPos().x == lastRoad.getEndPos().x){
+                    //the road is vertical
+                    newDest = new Point2D.Double(lastRoad.getEndPos().x, dest.y);
+                } else{
+                    //the road is horizontal
+                    newDest = new Point2D.Double(dest.x, lastRoad.getStartPos().y);
+                }
+                //reset the destination
+                this.dest = newDest;
+            }
+        }
     }
 
     /**
@@ -154,7 +172,7 @@ public class Navigation {
      * less than DEST_DISTANCE, return true, else return false
      */
     private boolean reachDest(){
-        if(this.dest.distance(car.getPosition()) < DEST_DISTANCE){
+        if(this.dest.distance(car.getPosition()) < (DEST_DISTANCE)){
             return true;
         }
         return false;
@@ -303,9 +321,10 @@ public class Navigation {
                 distance = (float)pos.distance(intersection.pos);
                 distance += route.getIntersectionDist(intersection, this.dest);
             }
+            distance = distance - DEST_DISTANCE;
         }
 
-        return distance/AVERG_SPEED;
+        return  distance/AVERG_SPEED;
     }
 
 }

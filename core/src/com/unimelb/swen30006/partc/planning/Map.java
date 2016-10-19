@@ -31,12 +31,29 @@ public class Map {
      * @return: the road that contains the point
      */
     public Road findRoad(Point2D.Double pos){
+        Road road = null;
         for(Road r : roads){
             if (r.containsPoint(pos)){
-                return r;
+                road = r;
             }
         }
-        return null;
+        if(road == null){
+            //not in the road, find the closest road
+            float minDis = Integer.MAX_VALUE;
+            for(Road r : roads){
+                float dis = r.minDistanceTo(pos);
+                if(dis < minDis){
+                    road = r;
+                    minDis = dis;
+                }
+            }
+            if(road.minDistanceTo(pos) > 50f){
+                //too far, out of reach
+                road = null;
+            }
+        }
+
+        return road;
     }
 
 
