@@ -8,7 +8,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
- * Created by Sean on 10/1/2016.
+ * A container contains all the roads and intersections for reducing
+ * coupling between World.
  */
 public class Map {
     private Road[] roads;

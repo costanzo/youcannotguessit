@@ -4,7 +4,7 @@ import com.unimelb.swen30006.partc.controllers.KeyboardController;
 import com.unimelb.swen30006.partc.core.objects.Car;
 
 /**
- * Created by tong on 16-10-1.
+ * Contains the information of car's next movement.
  */
 public class Action {
     public final float angle;

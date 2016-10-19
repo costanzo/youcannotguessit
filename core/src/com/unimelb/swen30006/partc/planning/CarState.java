@@ -5,9 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 import java.awt.geom.Point2D;
 
 /**
- * Created by Sean on 10/6/2016.
+ * It copies some data from the Car to reducing the coupling with Car
+ * also it contains some calculated data
  */
 public class CarState {
+    /**
+     * the state of the car, describes what the car should do
+     */
     public enum State{
         LEFT,
         RIGHT,
@@ -82,6 +86,7 @@ public class CarState {
     public void setRotation(float rotation) {
         this.rotation = rotation;
     }
+
 
     public void setPos(Point2D.Double pos) {
         this.pos = pos;

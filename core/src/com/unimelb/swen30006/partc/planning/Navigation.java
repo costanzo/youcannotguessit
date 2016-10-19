@@ -31,6 +31,13 @@ public class Navigation {
     private Point2D.Double dest;
 
 
+    /**
+     *
+     * @param car : an instance of Car
+     * @param state: an instance of state which will be set according to the
+     *             car's information and the route
+     * @param dest: a 2-d double point, describes the destination.
+     */
     public Navigation(Car car, CarState state, Point2D.Double dest){
         this.car = car;
         this.state = state;
@@ -45,6 +52,10 @@ public class Navigation {
         this.route = route;
     }
 
+    /**
+     * firstly, get the position (on the road or on the intersection) of the car
+     *then based on the position call setNextState or setStateOnRoad.
+     */
     public void setState(){
         this.state.setPos(this.car.getPosition());
         this.state.setRotation(this.car.getRotation());
@@ -67,8 +78,14 @@ public class Navigation {
 
     }
 
-    //The car is currently on the road, caulculate the next step of the car
+    /**
+     *  Set the carstate when the car is on road,
+     *  based on the route, there are three types of states:REACH_DEST(when
+     *  reacchDest function returns true), ARRIVING (when it is on the last road
+     *  of the route) and STRAIGHT (the most common one, just drive along the road)
+     */
     private void setStateOnRoad(){
+        // if the car reach the destination, set the state to "REACH_DEST", and terminate
         if(reachDest()){
             this.state.setState(CarState.State.REACH_DEST);
             return;
@@ -151,13 +168,20 @@ public class Navigation {
         return this.route != null;
     }
 
-  //The car is currently on the intersection based on the current road and next road, get the new state.
+    /**
+     * When the car is turning, get the related information of the car based on the previous road and
+     * next road it will enter
+     *
+     */
+
     private void setNextState(){
         Intersection.Direction next_road_direction = route.getTurnDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
         state.setShift(get_shift(nextRoad));
-
+        //get the car's angle in range {-180,180}
         float adjustRotation = car.adjustrotation();
+        // the next road has same direction as the previous road, means the car
+        // should keep the direction
         if(moving_direction == next_road_direction){
             if(moving_direction == Intersection.Direction.South)
                 state.setAngle(90f+adjustRotation);
@@ -166,8 +190,10 @@ public class Navigation {
             else if(moving_direction == Intersection.Direction.East)
                 state.setAngle(adjustRotation);
             else {
+                // in the range of 135 to 180
                 if (adjustRotation > 0)
                     state.setAngle(180f - adjustRotation);
+                // the range from -135 to 180
                 else
                     state.setAngle(180f + adjustRotation);
             }
@@ -214,6 +240,7 @@ public class Navigation {
                 state.setAngle(adjustRotation-rotation_goal);
                 state.setState(CarState.State.RIGHT);
             }
+            // the other situation not exist based on xml data.
         }else{
 
 
@@ -225,27 +252,37 @@ public class Navigation {
      * @return how far the car away from the middle of the road
      */
     private float get_shift(Road currentRoad){
+        // the road is horizontal
         if(currentRoad.getEndPos().getY()==currentRoad.getStartPos().getY()){
             float midpoint = (float)currentRoad.getStartPos().getY();
+            // the car is moving on the upper half of the road
             if(this.car.adjustrotation()<=90&&this.car.adjustrotation()>=-90){
 
                 return ((float)this.car.getPosition().getY()-midpoint);
-            }else{
+            }
+            // the car is moving on the lower half of the road
+            else{
                 return (midpoint-(float)this.car.getPosition().getY());
             }
-        }else{
+        }
+        // in the case of road is vertical
+        else{
             float midpoint = (float) currentRoad.getStartPos().getX();
+            //the car is moving on the left side of the vertical road
             if(this.car.adjustrotation()>=0&&this.car.adjustrotation()<=180){
                 return (midpoint-(float)this.car.getPosition().getX());
-            }else{
+            }
+            // the car is moving on the right side of the vertical road
+            else{
                 return ((float)this.car.getPosition().getX()-midpoint);
             }
         }
     }
 
     /**
-     * estimate the arriving time
-     * @return
+     * estimate the arriving time by accumulating the distance between car's position to the
+     * next intersection and the distance between each intersections and
+     * the last intersection to the destination distance.
      */
     public float eta(){
         float distance;
