@@ -10,6 +10,7 @@ import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
  */
 public class SimpleHandlingStrategy implements HandlingStrategy {
     //the speed constraint when crossing intersection
+    //this value is different from the diagram
     public static final float TURNING_SPEED = 12f;
 
     //the shift increase when the car is arriving the destination
@@ -22,15 +23,18 @@ public class SimpleHandlingStrategy implements HandlingStrategy {
     public static final float LEFT_TURN = 2f;
 
     //turning rate for turning right
+    //this value is different from the diagram
     public static final float RIGHT_TURN = -0.6f;
 
     //the distance that the car should maintain from the center of the road
+    //this value is different from the diagram
     public static final float LANE_MARGIN = 4f;
 
     //the threshold of angle for different turning strategy
     public static final float ADJUST_TURNING_THRES = 0.5f;
 
     //adjust coefficient when going straight
+    //this value is different from the diagram
     public static final float ADJUST_COEFF = 20f;
 
     //turning coefficient when turning left or right

@@ -51,9 +51,15 @@ public class Navigation {
 
     /**
      * @param route: the planned route to the destination
+     * In this method, there is some inconsistency with the diagrams
      */
     public void setRoute(Route route){
         this.route = route;
+
+        /**Note:
+         * The code below is newly added to the source code after the design submission,
+         * it interacts with route object
+         */
         if(this.route != null){
             Road[] roads = this.route.getRoads();
             Road lastRoad = roads[roads.length-1];
@@ -184,7 +190,6 @@ public class Navigation {
     /**
      * check whether the valid route has been passed in
      */
-
     public boolean readyToGo(){
         return this.route != null;
     }
@@ -192,9 +197,9 @@ public class Navigation {
     /**
      * When the car is turning, get the related information of the car based on the previous road and
      * next road it will enter
-     *
      */
     private void setNextState(){
+        //this part of interaction is not shown in the diagrams
         Intersection.Direction next_road_direction = route.getTurnDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();
         state.setShift(get_shift(nextRoad));
@@ -263,7 +268,6 @@ public class Navigation {
             // the other situation not exist based on xml data.
         }else{
 
-
         }
     }
 
@@ -323,6 +327,7 @@ public class Navigation {
                 distance = (float)pos.distance(intersection.pos);
                 distance += route.getIntersectionDist(intersection, this.dest);
             }
+            //this code is not shown in the design diagrams
             distance = distance - DEST_DISTANCE;
         }
 
