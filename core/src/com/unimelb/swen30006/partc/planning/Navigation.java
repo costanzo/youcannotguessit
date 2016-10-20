@@ -19,7 +19,10 @@ import java.awt.geom.Point2D;
 
 
 public class Navigation {
+    //the distance within which the car should stop
     public static final float DEST_DISTANCE = 20f;
+
+    //average speed for calculating estimated time
     public static final float AVERG_SPEED = 10f;
 
     private Road previousRoad;
@@ -191,7 +194,6 @@ public class Navigation {
      * next road it will enter
      *
      */
-
     private void setNextState(){
         Intersection.Direction next_road_direction = route.getTurnDirection(previousRoad,nextRoad);
         Intersection.Direction moving_direction = car.getMovingDirection();

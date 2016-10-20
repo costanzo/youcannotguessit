@@ -7,8 +7,13 @@ import com.unimelb.swen30006.partc.core.objects.Car;
  * Contains the information of car's next movement.
  */
 public class Action {
+    //the angle that the car should turn
     public final float angle;
+
+    //if the car should accelerate
     public final boolean accelerate;
+
+    //if the car should brake
     public final boolean brake;
 
     /**

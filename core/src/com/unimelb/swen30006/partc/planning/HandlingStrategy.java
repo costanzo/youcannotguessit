@@ -8,8 +8,8 @@ import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 
 public interface HandlingStrategy {
     /**
-     *
-     * @param perceptionResponse: the car's surrounding objects.
+     * This method will create an Action to handle the car based on the perception and car state
+     * @param perceptionResponse: perception response with the highest priority
      * @param state: the current state of the car
      * @return: an instance of Action which is the next step the car should take
      */

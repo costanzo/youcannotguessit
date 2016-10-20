@@ -26,12 +26,13 @@ public class Map {
     }
 
     /**
-     *
+     * find the road that the position is in or within 50f range
      * @param pos: the current position in double type
-     * @return: the road that contains the point
+     * @return: the nearest road or the road it is current in
      */
     public Road findRoad(Point2D.Double pos){
         Road road = null;
+        //try to find the road it is in
         for(Road r : roads){
             if (r.containsPoint(pos)){
                 road = r;
@@ -58,7 +59,7 @@ public class Map {
 
 
     /**
-     *
+     * This method tries to find intersections that the road is connected
      * @param road: an instance of Road
      * @return: get the intersections connecting to the road
      */
