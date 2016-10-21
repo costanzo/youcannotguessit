@@ -159,6 +159,9 @@ public class Route {
         for(Intersection.Direction d : dirs){
             //the road that this intersection connected in direction d
             Road r = inte.roads.get(d);
+            if(r == null){
+                continue;
+            }
             if(r.equals(nextEntry)){
                 //this road is the next entry
                 if(d == Intersection.Direction.East){

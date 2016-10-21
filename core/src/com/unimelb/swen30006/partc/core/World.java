@@ -90,10 +90,10 @@ public class World implements ISteppable {
 		this.cars = new Car[2];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
 		//add a new parking car as an obstacle
-		this.cars[1] = new Car(new Point2D.Double(30,145), 6, 10, Color.BLACK, 25f, 50f, 6f );
+		this.cars[1] = new Car(new Point2D.Double(60,140), 6, 10, Color.BLACK, 25f, 50f, 6f );
 
-		Planner planner = new Planner(cars[0], new Point2D.Double(350, 240), new Map(roads, intersections));
-		Planner planner2 = new Planner(cars[1], new Point2D.Double(380, 500), new Map(roads, intersections));
+		Planner planner = new Planner(cars[0], new Point2D.Double(90, 430), new Map(roads, intersections));
+		Planner planner2 = new Planner(cars[1], new Point2D.Double(90, 750), new Map(roads, intersections));
 
 
 //		this.controllers[1] = new KeyboardController(cars[1]);

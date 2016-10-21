@@ -43,6 +43,8 @@ public class Planner implements IPlanning {
     public boolean planRoute(Point2D.Double destination){
         Route route = routePlanner.getRoute(car.getPosition(), destination);
         gps.setRoute(route);
+//        if(this.car.getColour() == Color.CORAL)
+//            System.out.println(route);
         return route != null;
     }
 
@@ -56,8 +58,8 @@ public class Planner implements IPlanning {
             PerceptionResponse pr = this.priorityStrategy.getHighestPriority(results, this.state);
             Action action = this.handlingStrategy.getAction(pr, this.state);
 
-            if(this.car.getColour() == Color.CORAL)
-                System.out.println(eta());
+//            if(this.car.getColour() == Color.CORAL)
+//                System.out.println(state);
 
             //control the movement of the car
             action.takeAction(this.car);

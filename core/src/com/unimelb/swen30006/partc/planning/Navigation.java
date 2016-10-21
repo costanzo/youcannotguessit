@@ -217,8 +217,8 @@ public class Navigation {
             else {
                 // in the range of 135 to 180
                 if (adjustRotation > 0)
-                    state.setAngle(180f - adjustRotation);
-                // the range from -135 to 180
+                    state.setAngle(adjustRotation - 180f);
+                // the range from -135 to -180
                 else
                     state.setAngle(180f + adjustRotation);
             }
