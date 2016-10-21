@@ -57,6 +57,16 @@ public class SimpleRoutePlanner implements RoutePlanner {
 
             //find the closest road connected to the intersection to the end road
             road = findClosestRoad(intersection, end);
+
+            /**
+             * his part is added after the design submission
+             * To check if there is redundant road
+             * */
+            for(Road r : rs){
+                if(r.equals(road)){
+                    return null;
+                }
+            }
         }
 
         rs.add(road);
@@ -85,6 +95,8 @@ public class SimpleRoutePlanner implements RoutePlanner {
         ArrayList<Road> rs = new ArrayList<Road>(4);
         for(Intersection.Direction d : dirs){
             Road r = i.roads.get(d);
+            if(r == null)
+                continue;
             if(r.equals(dest)){
                 return dest;
             }

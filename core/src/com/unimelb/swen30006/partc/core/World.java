@@ -72,7 +72,8 @@ public class World implements ISteppable {
 	 */
 	public World() {
 		// Create a map reader
-		MapReader reader = new MapReader("test_course.xml");
+		MapReader reader = new MapReader("mapForTesting.xml");
+		//MapReader reader = new MapReader("test_course.xml");
 
 		// Retrieve the values from the map reader
 		this.roads = reader.processRoads();
@@ -86,19 +87,19 @@ public class World implements ISteppable {
 		buildQuadTree();
 
 		// Controllers and cars
-		this.controllers = new Controller[2];
-		this.cars = new Car[2];
+		this.controllers = new Controller[1];
+		this.cars = new Car[1];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
 		//add a new parking car as an obstacle
-		this.cars[1] = new Car(new Point2D.Double(60,140), 6, 10, Color.BLACK, 25f, 50f, 6f );
+		//this.cars[1] = new Car(new Point2D.Double(60,140), 6, 10, Color.BLACK, 25f, 50f, 6f );
 
-		Planner planner = new Planner(cars[0], new Point2D.Double(90, 430), new Map(roads, intersections));
-		Planner planner2 = new Planner(cars[1], new Point2D.Double(90, 750), new Map(roads, intersections));
+		Planner planner = new Planner(cars[0], new Point2D.Double(280, 415), new Map(roads, intersections));
+		//Planner planner2 = new Planner(cars[1], new Point2D.Double(90, 750), new Map(roads, intersections));
 
 
 //		this.controllers[1] = new KeyboardController(cars[1]);
 		this.controllers[0] = new AIController(cars[0], planner, new PerceptionForTesting(this));
-		this.controllers[1] = new AIController(cars[1], planner2, new PerceptionForTesting(this));
+		//this.controllers[1] = new AIController(cars[1], planner2, new PerceptionForTesting(this));
 
 		// Remaning variables
 		this.worldTime = MIDDAY;
